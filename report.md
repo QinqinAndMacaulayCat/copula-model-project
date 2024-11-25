@@ -1,15 +1,20 @@
 ---
-title: "Copula-based simulation of multivariate time series by Qinqin Huang, Yongyi Tang, Xiaohan Shen, and Pai Peng"
+title: "Copula dependence and risk sensitivity of asset portfolio by Qinqin Huang, Yongyi Tang, Xiaohan Shen, and Pai Peng"
 ---
 
 
 ## 1 Introduction
+In this report, we refer to the paper by Bruneau et al. <sup>[2](#Bruneau2019)<\sup> to estimate the risk sensitivity of financial assets through multivariate copula. The structure of the report is as follows. First, we analyze the data and build models to realize transforming data from ppf to cdf and the inverse process. Second, we introduce the canonical vine and simulate data from the canonical vine which have the same dependences with our input data as the parameters of the canonical vine are fitted based on the input data. Third, we calculate the Cross Conditional Value at Risk (CVaR).
 
 
 ## 2 Modeling
+
 ### 2.1 Copulae
+
 In this section, we basically infer the models from the paper by Aas et al. <sup>[1](#Aas2009)</sup>.
+
 #### 2.1.1 C-Vine
+
 Considering a multivariate cumulated distribution function $F$ of $n$ random variables $\textbf{X}={X_1, ..., X_n}$ with marginals $F_1(x_1), ..., F_n(x_n)$, Skalar's Theorem states that there exists a unique n-dimensional copula $C$ to describte the joint distribution of these these variables. If $F$ is absolutely continuous with strictly increasing and continuous marginal cdf $F_i$, the joint density function $f$ can be written as:
 
 $$
@@ -74,9 +79,8 @@ c_{xy|\textbf{v}}\{F(x|\textbf{v}), F(y|\textbf{v})\} = 1.
 $$
 
 
-#### 2.1.3 Bivariate copulae
 
-#### 2.1.4 Simulation from a pair-copula decomposed model
+#### 2.1.3 Simulation from a pair-copula decomposed model
 In this section we show the simulation algorithm for canonical vines which follows the method discussed in Bruneau (2019) We assume for simplicity that the margins of the distribution are uniform. 
 [^1]: For variables with other marginal distributions, we transform the data to uniform marginals before fitting the vine copula.
 
@@ -108,7 +112,7 @@ The algorithm is as follows:
 ![simulation algorithm](reportfile/algo1.png)
 
 
-#### 2.1.5 Estimation of the parameters
+#### 2.1.4 Estimation of the parameters
 In this section we describe how the parameters of the canonical vine density are estimated. To simplify the process as mentioned before, we assumme that the marginals are uniform and the the time series is stationary and independent over time. This assumption is not restrictive, as we can always transform the data to uniform marginals before fitting the vine copula. 
 
 We use the maximum likelihood method to estimate the parameters of the canonical vine. Since the actual margins are normally unknown in practice, what is being maximised is a pseudo-likelihood. 
@@ -129,9 +133,89 @@ $$
 
 ![estimation algorithm](reportfile/algolikelihood.png)
 
+Starting values of the parameters needed in the numerical maximization of the log-likelihood are determined as follows:
+
+1. Estimate the parameters of the copulae in the first level of the vine tree from the original data.
+
+2. Compute observations for tree 2 using the copula parameters from tree 1 and the h-function.
+
+3. Estimate the parameters of the copulae in the second level of the vine tree from the observations computed in step 2.
+
+4. Repeat steps 2 and 3 until the parameters of all copulae in the vine tree have been estimated.
+
+#### 2.1.5 Copula selection
+
+In the above content, we introduce the canonical vine copula, the calibration of the parameters, and the simulation of the data. However, we didn't specify which copula to use in the pair-copula decomposition. The choice of copula is crucial for the performance of the model. In this section, we discuss the selection of the copulae.
 
 
+#### 2.1.5.1
+The density of the bivariate Gaussian copula is given by：
 
+$$
+c(u, v, \theta) = \frac{1}{\sqrt(1-\theta^2)} \exp \{ -\frac{{\theta}^2 (x_1^2 + x_2^2) - 2 \theta x_1 x_2}{2(1-\theta^2)} \}, -1 < \theta < 1.
+$$
+
+Here, $\theta$ is the correlation parameter, which is normally denoted as $\rho$. $x_1 = \Phi ^{-1}(u)$, $x_2 = \Phi ^{-1}(v)$, and $\Phi$ is the standard normal distribution function.
+
+The h-function is given by:
+
+$$
+h(u, v, \theta) = \Phi(\frac{\Phi^{-1}(u) - \theta \Phi ^{-1}(v)}{\sqrt{1-\theta^2}}).
+$$
+
+Suppose the h-function is equal to $w$, then the inverse h-function is given by:
+
+$$
+h^{-1}(w, v, \theta) = \Phi\{ \Phi^{-1}(w) \sqrt{1-\theta^2} + \theta \Phi^{-1}(v) \}
+$$
+
+
+#### 2.1.5.3 Clayton copula
+The density of Clayton copula is given by:
+
+$$
+c(u, v, \theta) = (1 + \theta)(u \cdot v)^{-\theta} - 1) \times (u^{-\theta} + v^{-\theta} - 1)^{-1/\theta - 2}, 0 < \theta < \infty. 
+$$
+
+Perfect dependence is obtained when $\theta \rightarrow \infty$, while $\theta \rightarrow 0$ implies independence.
+
+For this copula the h-function is given by:
+
+$$
+h(u, v, \theta) = v^{-\theta-1}(u^{-\theta} + v^{-\theta} - 1){-1 - \theta}.
+$$
+
+Suppose the h-function is equal to $w$, then the inverse h-function is given by:
+
+$$
+h^{-1}(w, v, \theta) = \{(w \cdot v^{\theta+1})^{\frac{\theta}{\theta+1}} + 1-v^{-\theta}\}^{-1/\theta}.
+$$
+
+
+#### 2.1.5.4 Gumbel copula 
+The density of Gumbel copula is given by:
+
+$$
+c(u, v, \theta) = C_{uv}(u, v)(uv)^{-1} \\
+\times \{(-log u)^{\theta} + (-log v)^{\theta}\}^{-2+2/\theta} \\
+\times (log u \times log v)^{\theta-1} \\
+\times \{ 1 + (\theta - 1) ((-log u)^{\theta} + (-log v)^{\theta})^{-1/\theta}\}, \theta \geq 1.
+$$
+
+where $C_{uv}(u, v) = exp \{ -\{(-log u)^{\theta} + (-log v)^{\theta} \}^{1/\theta}\}$. 
+
+Perfect dependence is obtained when $\theta \rightarrow \infty$, while $\theta = 1$ implies independence.
+
+For this copula the h-function is given by:
+
+$$
+h(u, v, \theta) = C_{uv}(u,v) \cdot \frac{1}{v} \cdot (-log v)^{\theta - 1} \times \{(-log u)^{\theta} + (-log v)^{\theta} \}^{1/\theta-1}.
+$$
+
+Here the inverse h-function must be obtained numerically using the Newton-Raphson method.
+
+
+In canonical vine, we can use different copulae in the pair-copula decomposition. However, we use single copula type in the pair-copula decomposition in our project to simmplify the process. 
 
 ### 2.2 Distribution of the data
 
@@ -143,6 +227,18 @@ $$
 ### 3.1 Data
 
 ### 3.2 Code
+
+#### 3.2.1 Distribution
+
+
+#### 3.2.2 CVine
+In this code, we use the class `CVine` to realize the canonical vine copula. Basically, the class involves the following methods:
+
+1. `build_tree()` - to build the tree structure of the canonical vine copula. This method will fill the class attribute `tree` with the tree structure. 
+
+2. `fit()` - to fit the canonical vine copula to the data. This method will estimate the parameters of the copulae in the vine tree, which will call the method `get_likelihood()` to calculate the log-likelihood of the tree. Here, we use `scipy.optimize.minimize` to maximize the log-likelihood.
+
+3. `simulate()` - to simulate data from the canonical vine copula. This method will simulate data from the fitted vine copula. In this algorithm, we generate independent uniform random variables and then use the algorithm mentioned in Section 2 to generate dependent uniform random variables.
 
 ### 3.3 Results
 
@@ -157,4 +253,16 @@ $$
 <a id="Aas2009"></a> [1] Aas, K., Czado, C., Frigessi, A., and Bakken, H. (2009). Pair-copula constructions of multiple dependence. Insurance: Mathematics and Economics, 44(2), 182-198. 
 
 <a id="Bruneau2019"></a> [2] Catherine Bruneau, Alexis Flageollet, and Zhun Peng. (2019). VineCopula: Statistical Inference of Vine Copulas. R package version 2.0.0. https://CRAN.R-project.org/package=VineCopula
+
+
+## Appendix
+### A Code
+
+#### A.1 CVine
+
+```python
+
+
+```
+
 
