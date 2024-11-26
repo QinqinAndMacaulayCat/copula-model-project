@@ -11,19 +11,21 @@ class CVine(object):
              "nodenum": 0, # number of the nodes in this tree (l). equal to n - k 
              "edgenum": 0, # number of the edges in this tree. equal to l as our node number is the actual number minus1.
              "V": None,  # h functions in this level. V[:, j] is the h function of node j.
+             "dependence": [] # match the pair of nodes
              }    
 
     tree = {"thetaMatrix": None, # copula parameter matrix in this level. it is a upper matrix. thetaMatrix[i, j] is the copula parameter in level j between node 1 and node i+1. 
             "structure": {}, # the tree structure in this level. the key is the node index, the value is layer.
             "depth": 0, # the depth of the tree, 0 means only has root. 
             }
-    
+    max_depth = None # if the max_depth is given, the only use the first max_depth layers to fit the model. 
 
-    def __init__(self, U, copulaType="Clayton",dependence=None):
+    def __init__(self, U, copulaType="Clayton",dependence=None, max_depth=None):
         
         """
         U: np.array, data matrix. follows uniform distribution
         dependence: np.array, dependence matrix constructed by 0 and 1. dependence[i, j] = 1 means i and j are dependent; 0 means independent. 
+
         """
         self.U = U
         self.T = U.shape[0]
@@ -33,6 +35,8 @@ class CVine(object):
             self.copula = Clayton()
         else:
             raise ValueError("The copula type is not supported.")
+
+        self.max_depth = max_depth
 
         
     def build_tree(self):
@@ -177,7 +181,6 @@ class CVine(object):
             for i in range(1, self.variable_num + 1):
                 V[:, 0, i] = W[:, i]
                 for k in range(0, i):
-                    print("theta", self.tree["thetaMatrix"][k, i-k-1])
                     self.copula.theta = self.tree["thetaMatrix"][k, i-k-1]
                     V[:, 0, i] = self.copula.inverse_h(V[:, 0, i], V[:, k, k])
                 
