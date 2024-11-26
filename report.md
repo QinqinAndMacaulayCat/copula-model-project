@@ -288,6 +288,8 @@ We first test the `CVine` with the Gaussian copula. The results are shown below:
 
 Then we test the `CVine` with the Clayton copula. The results are shown below:
 
+#### 3.3.3 CCVaR
+
 
 
 
@@ -295,14 +297,16 @@ Then we test the `CVine` with the Clayton copula. The results are shown below:
 
 ## 4 Conclusion
 
-
+The canonical vine copula is a powerful tool for modeling the dependence structure of multivariate data. In this report, we have introduced the canonical vine copula and its application in estimating the risk sensitivity of asset portfolios. We have implemented the canonical vine copula in Python and demonstrated its use in simulating data and estimating the parameters of the copulae. We have also implemented the Cross Conditional Value at Risk (CCVaR) to quantify the expected return of an asset under extreme conditions of a given risk factor. The CCVaR provides a useful measure of the risk sensitivity of asset portfolios to different risk factors. Further research can explore the application of the canonical vine copula in asset portfolio optimization and risk management. The drawbacks of our implementation include that we have not compare the results of different copulae and simply assume returns follow Gaussian Copula. 
 
 
 ## References
 
 <a id="Aas2009"></a> [1] Aas, K., Czado, C., Frigessi, A., and Bakken, H. (2009). Pair-copula constructions of multiple dependence. Insurance: Mathematics and Economics, 44(2), 182-198. 
 
-<a id="Bruneau2019"></a> [2] Catherine Bruneau, Alexis Flageollet, and Zhun Peng. (2019). VineCopula: Statistical Inference of Vine Copulas. R package version 2.0.0. https://CRAN.R-project.org/package=VineCopula
+<a id="Bruneau2019"></a> [2] Catherine Bruneau, Alexis Flageollet, and Zhun Peng. (2019). Vine Copula Based Modeling.  
+
+<a id="Czado"></a> [3] Claudia Czado and Thomas Naglar. (2021). Vine copula based modeling.
 
 
 ## Appendix

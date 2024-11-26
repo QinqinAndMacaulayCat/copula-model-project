@@ -25,8 +25,17 @@ class Multivariate:
         u: np.array, the quantile
         """
         pass
+    
+    def empircal_ppf(self, u):
+        """
+        u: np.array, the quantile
+        """
+        ppfs = []
+        for i in range(self.data.shape[1]):
+            ppf_value = np.quantile(self.data.iloc[:, i], u[:, i])
+            ppfs.append(ppf_value)
 
- 
+        ppfs = np.array(ppfs).T
 
-
+        return ppfs
 

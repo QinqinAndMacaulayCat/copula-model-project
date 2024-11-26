@@ -24,6 +24,7 @@ def main():
     dataproc = Multivariate(y)
     u = dataproc.empircal_cdf()
     u = u.values
+    print("The u", u)
     cv = CVine(u, copulaType="Gaussian")
     cv.build_tree()
     cv.fit()
