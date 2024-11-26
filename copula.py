@@ -13,9 +13,11 @@ def mypower(x, y):
 
     return power
 
+
 class Clayton:
     theta = 0
     bound = (1e-5, np.inf) # restrict the range of the parameter
+
     def c(self, u: np.ndarray, v: np.ndarray):
         """
         return: np.array, the density of Clayton copula
@@ -40,6 +42,9 @@ class Clayton:
             result[np.isnan(result)] = 1
         else:
             result[np.isnan(result)] = 0
+        
+        result[result > 1] = 1
+        result[result < 0] = 0
 
         return result
     
@@ -61,7 +66,11 @@ class Clayton:
             d[np.isnan(d)] = v[np.isnan(d)]
         else:
             d[np.isnan(d)] = w[np.isnan(d)]
+        
+        d[d > 1] = 1
+        d[d < 0] = 0
 
         return d    
 
 
+    
