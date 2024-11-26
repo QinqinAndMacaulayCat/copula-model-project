@@ -1,10 +1,8 @@
 import numpy as np
-import pandas as pd
 from scipy.optimize import minimize
 from copula import Clayton
-from distribution import Multivariate
 
-class CVine(Clayton):
+class CVine(object):
     layer = {"root": [], # list of root nodes. ex. in F(u1, u2|v), v is the root node 
              "parentnode": {}, # index of nodes in last level. ex. {1: (1,2)} means the node 1 in this tree level got from the node pair (1,2) in last level
              "node": [], # index of the nodes. from 0 to l. this is not the actual number index in the original data.
@@ -19,8 +17,9 @@ class CVine(Clayton):
             "structure": {}, # the tree structure in this level. the key is the node index, the value is layer.
             "depth": 0, # the depth of the tree, 0 means only has root. 
             }
-               
-    def __init__(self, U, dependence=None):
+    
+
+    def __init__(self, U, copulaType="Clayton",dependence=None):
         
         """
         U: np.array, data matrix. follows uniform distribution
@@ -29,7 +28,12 @@ class CVine(Clayton):
         self.U = U
         self.T = U.shape[0]
         self.variable_num = U.shape[1] - 1  # to make the structure more clear, all the variables are indexed from 0. Therefore, when the variable_num is n, we actually have n+1 variables x0, x1, ..., xn.
-        self.dependence = dependence # if dependence is None, we assume all the variables are dependent. if not, the copula function between independent variables will be 1.
+        self.dependence = dependence # if dependence is None, we assume all the variables are dependen . if not, the copula function between independent variables will be 1.
+        if copulaType == "Clayton":
+            self.copula = Clayton()
+        else:
+            raise ValueError("The copula type is not supported.")
+
         
     def build_tree(self):
         """
@@ -46,7 +50,7 @@ class CVine(Clayton):
         
         layer = self.layer.copy()
         layer["level"] = 0
-        layer["V"] = self.U.copy()
+        layer["V"] = self.U.copy() # the F(x|v) in the first layer is the empirical cdf of x. 
         layer["nodenum"] = self.variable_num
         layer["edgenum"] = self.variable_num 
         layer["node"] = list(range(0, layer["nodenum"] + 1))
@@ -69,6 +73,9 @@ class CVine(Clayton):
         layer["edgenum"] = layer["nodenum"]
         layer["node"] = list(range(0, layer["nodenum"]+ 1))
         (layer["pair"], layer["node"], layer["parentnode"], layer["root"]) = self.pair_nodes(last_layer)
+
+        # todo dependence
+
 
         self.tree["structure"][layer["level"]] = layer
         self.tree["depth"] = self.tree["depth"] + 1
@@ -93,7 +100,6 @@ class CVine(Clayton):
         else:
             pairs = []
             parentnodes = {}
-            last_nodes = last_layer["node"]
             last_pairs = last_layer["pair"]
             
             common_node = last_pairs[0][0] # always set the first node as the center node in each layer. and the common element between pairs are the left element in the center pair. the common element between the center node and neighbor nodes will be set into the new root.
@@ -113,13 +119,15 @@ class CVine(Clayton):
 
     def fit(self):
         """
-        fit the vine tree model
+        fit the vine tree model by maximizing the likelihood of the whole tree.
 
         """
         paramNum = sum([self.tree["structure"][layer]["edgenum"] for layer in range(0, self.tree["depth"])])
 
         thetaParams = np.ones(paramNum)
-        result = minimize(self.get_likelihood, thetaParams, bounds=[(1e-6, np.inf)]*paramNum)
+        bounds = [self.copula.bound] * paramNum
+
+        result = minimize(self.get_likelihood, thetaParams, bounds=bounds)
         thetaMatrix = np.zeros((self.tree["depth"], self.tree["structure"][0]["edgenum"]))
         n = 0
         for i in range(0, self.tree["depth"]):
@@ -128,10 +136,32 @@ class CVine(Clayton):
                 n += 1
 
         self.tree["thetaMatrix"] = thetaMatrix
+
+
+    def fit2(self):
         
+        """
+        fit the parameters through maximizing the likelihood in each layer.
+        """
+        self.tree["thetaMatrix"] = np.zeros((self.tree["depth"], self.tree["structure"][0]["edgenum"]))
+
+        for i in range(1, self.tree["depth"]+1):
+            last_layer = self.tree["structure"][i-1]
+            layertheta = np.ones(last_layer["edgenum"])
+            bounds = [self.copula.bound] * last_layer["edgenum"]
+            result = minimize(self.get_layer_likelihood, layertheta, args=(last_layer, ), bounds=bounds)
+
+            self.tree["thetaMatrix"][i-1, :last_layer["edgenum"]] = result.x
+
+            self.tree["structure"][i]["V"] = self.get_layer_h(result.x, last_layer)
+
+
+
     def simulate(self, n):
         """
         simulate the data from the vine tree model
+        param n: int, the number of the data to be simulated for each variable.
+
         """
         if self.tree["thetaMatrix"] is None:
             print("Please fit the model first.")
@@ -139,22 +169,23 @@ class CVine(Clayton):
         
         else:
             W = np.random.uniform(0, 1, n * (self.variable_num + 1))
-            V = np.empty((self.tree["depth"]+1, n, self.variable_num+1))
+            V = np.empty((n, self.variable_num+1, self.tree["depth"]+1))
             W = W.reshape((n, self.variable_num + 1))
             U = np.empty((n, self.variable_num + 1))
             U[:, 0] = W[:, 0]
-            V[0, :, 0] = W[:, 0] 
+            V[:, 0, 0] = W[:, 0] 
             for i in range(1, self.variable_num + 1):
-                V[i, :, 0] = W[:, i]
+                V[:, 0, i] = W[:, i]
                 for k in range(0, i):
-                    self.theta = self.tree["thetaMatrix"][k, i-k-1]
-                    V[i, :, 0] = self.inverse_h(V[i, :, 0], V[k, :, k])
+                    print("theta", self.tree["thetaMatrix"][k, i-k-1])
+                    self.copula.theta = self.tree["thetaMatrix"][k, i-k-1]
+                    V[:, 0, i] = self.copula.inverse_h(V[:, 0, i], V[:, k, k])
                 
-                U[:, i] = V[i, :, 0]
+                U[:, i] = V[:, 0, i]
 
                 for j in range(0, i): 
-                    self.theta = self.tree["thetaMatrix"][j, i-j-1]
-                    V[i, :, j + 1] = self.h(V[i, :, j], V[j, :, j])
+                    self.copula.theta = self.tree["thetaMatrix"][j, i-j-1]
+                    V[:, j + 1, i] = self.copula.h(V[:, j, i], V[:, j, j])
             return U
         
 
@@ -171,47 +202,32 @@ class CVine(Clayton):
             left = right
             right = right + last_layer["edgenum"] 
             layertheta = thetaParams[left:right]
-            total_likelihood += self.get_layer_likelihood(last_layer, layertheta)
+            total_likelihood += self.get_layer_likelihood(layertheta, last_layer)
             
-            self.tree["structure"][k]["V"] = self.get_layer_h(last_layer, layertheta)
+            self.tree["structure"][k]["V"] = self.get_layer_h(layertheta, last_layer)
 
         return total_likelihood
 
-    def get_layer_likelihood(self, last_layer, thetaParams):
+    def get_layer_likelihood(self, thetaParams, last_layer):
         """get the likelihood of the layer"""
         likelihood = 0
         
         for i in range(1, last_layer["nodenum"]+1): # totally l copula functions
 
-            self.theta = thetaParams[i-1]
-            likelihood += np.nansum(np.log(self.c(last_layer["V"][:, 0], last_layer["V"][:, i])))
+            self.copula.theta = thetaParams[i-1]
+            likelihood += np.nansum(np.log(self.copula.c(last_layer["V"][:, 0], last_layer["V"][:, i])))
         
         return -likelihood
 
-    def get_layer_h(self, last_layer, thetaParams):
+    def get_layer_h(self, thetaParams, last_layer):
         """get the h function of the layer"""
         V = np.empty((self.T, last_layer["nodenum"])) # the total nodes of this layer is the number of nodes in last layer minus 1, which is equal to the edges in last layer.
         
         for i in range(1, last_layer["nodenum"]+1):
-            self.theta = thetaParams[i-1]
-            V[:, i-1] = self.h(last_layer["V"][:, 0], last_layer["V"][:, i])
+            self.copula.theta = thetaParams[i-1]
+            V[:, i-1] = self.copula.h(last_layer["V"][:, 0], last_layer["V"][:, i])
         
         return V
 
     
 
-if __name__ == "__main__":
-    y1 = np.random.normal(0, 1, 100)
-    y = pd.DataFrame({"y1": y1, 
-                      "y2": y1,
-                      "y3": y1,
-                      "y4": y1,
-                      "y5": y1})
-    dataproc = Multivariate(y)
-    u = dataproc.empircal_cdf()
-    u = u.values
-    cv = CVine(u)
-    cv.build_tree()
-    cv.fit()
-    simulated_data = cv.simulate(1000)
-    print(cv.tree["thetaMatrix"])

@@ -4,7 +4,8 @@ title: "Copula dependence and risk sensitivity of asset portfolio by Qinqin Huan
 
 
 ## 1 Introduction
-In this report, we refer to the paper by Bruneau et al. <sup>[2](#Bruneau2019)<\sup> to estimate the risk sensitivity of financial assets through multivariate copula. The structure of the report is as follows. First, we analyze the data and build models to realize transforming data from ppf to cdf and the inverse process. Second, we introduce the canonical vine and simulate data from the canonical vine which have the same dependences with our input data as the parameters of the canonical vine are fitted based on the input data. Third, we calculate the Cross Conditional Value at Risk (CVaR).
+In this report, we refer to the paper by Bruneau et al.<sup>[2](#Bruneau2019)</sup>
+to estimate the risk sensitivity of financial assets through multivariate copula. The structure of the report is as follows. First, we analyze the data and build models to realize transforming data from ppf to cdf and the inverse process. Second, we introduce the canonical vine and simulate data from the canonical vine which have the same dependences with our input data as the parameters of the canonical vine are fitted based on the input data. Third, we calculate the Cross Conditional Value at Risk (CVaR).
 
 
 ## 2 Modeling
