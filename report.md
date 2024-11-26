@@ -60,6 +60,7 @@ Furture, let $h^{-1}(u, v, \Theta)$ be the inverse of the h-function with respec
 
 For high-dimension distribution, there are significant number of possible pair-copular. To help organising them, Bedford and Cooke have introduced a graphical model denoted as the regular vine. Here, we concentrate on the special case of regular vines - the canonical vine (C-vine), which gives a specific way of decomposing the density. The figure below shows a C-vine with 5 variables. 
 
+![C-vine](reportfile/cvine.png)
 
 The n-dimensional density corresponding to a C-vine is given by:
 
@@ -242,6 +243,21 @@ In this code, we use the class `CVine` to realize the canonical vine copula. Bas
 3. `simulate()` - to simulate data from the canonical vine copula. This method will simulate data from the fitted vine copula. In this algorithm, we generate independent uniform random variables and then use the algorithm mentioned in Section 2 to generate dependent uniform random variables.
 
 ### 3.3 Results
+
+#### 3.3.1 Distribution
+
+
+#### 3.3.2 CVine
+We test the `CVine` based on the return data of the assets. According to our definition of copula, the parameters of the copulae will reflect the level of dependence between the assets. 
+
+We first test the `CVine` with the Gaussian copula. The results are shown below:
+
+
+Then we test the `CVine` with the Clayton copula. The results are shown below:
+
+
+
+
 
 
 ## 4 Conclusion

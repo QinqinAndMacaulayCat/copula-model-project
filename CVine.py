@@ -1,8 +1,6 @@
 import numpy as np
 from scipy.optimize import minimize
 from copula import Clayton, Gaussian
-from distribution import Multivariate
-from data_fetcher import DataFetcher
 
 
 class CVine(object):
@@ -46,6 +44,7 @@ class CVine(object):
             raise ValueError("The copula type is not supported.")
 
         self.max_depth = max_depth
+
 
     def build_tree(self):
         """
@@ -254,25 +253,3 @@ class CVine(object):
         return V
 
 
-# if __name__ == "__main__":
-#     tickers = ['^GSPC', '^DJI', '^TNX', '^IXIC', '^RUT']
-#     start_date = '2023-01-01'
-#     end_date = '2024-11-01'
-#
-#     dft = DataFetcher(tickers=tickers, start_date=start_date, end_date=end_date)
-#     dft.fetch_and_save_data()
-#     dft.plot_distribuion()
-#     y = dft.data
-#     dataproc = Multivariate(y)
-#     u = dataproc.empircal_cdf()
-#     u = u.values
-#     cv = CVine(u, copulaType="Gaussian")
-#     cv.build_tree()
-#     cv.fit()
-#     simulated_data = cv.simulate(1000)
-#     # todo: check the overflow
-#     simulated_data = simulated_data.clip(0, 1)
-#     simulated_data[np.isnan(simulated_data)] = 0
-#     simulated_data_reversed = dataproc.empircal_ppf(simulated_data)
-#     print(cv.tree["thetaMatrix"])
-#

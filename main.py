@@ -8,34 +8,31 @@ import pandas as pd
 from CVine import *
 from distribution import Multivariate
 from VaR import CCVaR
+from data_fetcher import DataFetcher
 
 
 def main():
-    np.random.seed(0)
-    y1 = np.random.normal(0, 1, 100)
-    y2 = np.random.normal(0, 1, 100)
-    y3 = np.random.normal(0, 1, 100)
-    y4 = np.random.normal(0, 1, 100)
-    y5 = np.random.normal(0, 1, 100)
+    
+    tickers = ['^GSPC', '^DJI', '^TNX', '^IXIC', '^RUT']
+    start_date = '2023-01-01'
+    end_date = '2024-11-01'
 
-    y = pd.DataFrame({"y1": y1, 
-                      "y2": y2,
-                      "y3": y3,
-                      "y4": y4,
-                      "y5": y5})
+    dft = DataFetcher(tickers=tickers, start_date=start_date, end_date=end_date)
+    dft.fetch_and_save_data()
+    dft.plot_distribuion()
+    y = dft.data
     dataproc = Multivariate(y)
     u = dataproc.empircal_cdf()
     u = u.values
-    cv = CVine(U=u, copulaType="Clayton", max_depth=2)
-
+    cv = CVine(u, copulaType="Gaussian")
     cv.build_tree()
-    cv.fit2()
+    cv.fit()
     simulated_data = cv.simulate(1000)
-    print("simulated", simulated_data[simulated_data >1])
-    # print(simulated_data)
-    # print(cv.tree["thetaMatrix"])
+    # todo: check the overflow
+    print(cv.tree["thetaMatrix"])
     # print(pd.DataFrame(simulated_data).corr())
 
+    simulated_data_reversed = dataproc.empircal_ppf(simulated_data)
     factors = simulated_data[:, :3]   
     ccvar_model = CCVaR(data=simulated_data, factors=factors, alpha=0.05)
     ccvar_value = ccvar_model.calculate_ccvar(target_asset_index=0, factor_index=1

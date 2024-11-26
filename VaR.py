@@ -81,26 +81,26 @@ class CCVaR:
             "Factors": [f"Factor_{j+1}" for j in range(self.F)],
         }
 
-if __name__ == "__main__":
-
-    np.random.seed(42)  
-    simulated_data = np.random.normal(0, 1, (1000, 5)) 
-    factors = simulated_data[:, :3]
-    ccvar_model = CCVaR(data=simulated_data, factors=factors, alpha=0.05)
-    ccvar_value = ccvar_model.calculate_ccvar(target_asset_index=0, factor_index=1)
-    print(f"CCVaR of Asset_1 with respect to Factor_2: {ccvar_value:.4f}")
-
-    ccvar_matrix = ccvar_model.calculate_all_ccvar()
-    print("\nCCVaR Matrix:")
-    print(ccvar_matrix)
-
-    summary = ccvar_model.summarize_results()
-    print("\nSummary:")
-    print(f"Assets: {summary['Assets']}")
-    print(f"Factors: {summary['Factors']}")
-    print("CCVaR Matrix:")
-    print(summary["CCVaR Matrix"])
-  
+# if __name__ == "__main__":
+#
+#     np.random.seed(42)  
+#     simulated_data = np.random.normal(0, 1, (1000, 5)) 
+#     factors = simulated_data[:, :3]
+#     ccvar_model = CCVaR(data=simulated_data, factors=factors, alpha=0.05)
+#     ccvar_value = ccvar_model.calculate_ccvar(target_asset_index=0, factor_index=1)
+#     print(f"CCVaR of Asset_1 with respect to Factor_2: {ccvar_value:.4f}")
+#
+#     ccvar_matrix = ccvar_model.calculate_all_ccvar()
+#     print("\nCCVaR Matrix:")
+#     print(ccvar_matrix)
+#
+#     summary = ccvar_model.summarize_results()
+#     print("\nSummary:")
+#     print(f"Assets: {summary['Assets']}")
+#     print(f"Factors: {summary['Factors']}")
+#     print("CCVaR Matrix:")
+#     print(summary["CCVaR Matrix"])
+#  
 
 
 
