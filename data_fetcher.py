@@ -37,10 +37,10 @@ class DataFetcher:
             close = pd.read_csv(file_path)
 
         else:
-            data = yf.download(self.tickers, start=self.start_date, end=self.end_date)['Adj Close']
-            data = data.loc[:, self.tickers]
-            data.ffill(inplace=True)
-            data.to_csv(file_path)
+            close = yf.download(self.tickers, start=self.start_date, end=self.end_date)['Adj Close']
+            close = close.loc[:, self.tickers]
+            close.ffill(inplace=True)
+            close.to_csv(file_path)
 
         if os.path.exists(file_path):
              close = pd.read_csv(file_path, index_col=0)
