@@ -223,7 +223,21 @@ In canonical vine, we can use different copulae in the pair-copula decomposition
 
 
 ### 2.3 CCVaR
+The Cross Conditional Value at Risk (CCVaR) quantifies the expected return of an asset under the extreme conditions of a given risk factor. For an asset $R_i$ and a risk factor $X$, the CCVaR at confidence level $\alpha$ is defined as:
 
+$$
+CCVaR_\alpha(R_i \mid X; F_X) = \mathbb{E}[R_i \mid F_X(X) \leq \alpha],
+$$
+
+where:
+
+$$
+F_X(X): \text{ the cumulative distribution function (CDF) of the risk factor } X,
+$$
+
+$$
+\alpha: \text{ the confidence level defining the extreme quantile (e.g., } \alpha = 0.05 \text{ for the worst 5%)}.
+$$
 
 ## 3 Implementation
 ### 3.1 Data
@@ -241,6 +255,25 @@ In this code, we use the class `CVine` to realize the canonical vine copula. Bas
 2. `fit()` - to fit the canonical vine copula to the data. This method will estimate the parameters of the copulae in the vine tree, which will call the method `get_likelihood()` to calculate the log-likelihood of the tree. Here, we use `scipy.optimize.minimize` to maximize the log-likelihood.
 
 3. `simulate()` - to simulate data from the canonical vine copula. This method will simulate data from the fitted vine copula. In this algorithm, we generate independent uniform random variables and then use the algorithm mentioned in Section 2 to generate dependent uniform random variables.
+
+#### 3.2.3 CCVar
+In this section, we describe the code implementation of CCVaR using Python. The implementation is encapsulated in the `CCVaR` class, which contains methods to calculate CCVaR for single asset-factor pairs and generate a CCVaR matrix for all assets and factors.
+
+1. **Initialization**: The `__init__` method initializes the CCVaR model by taking the following inputs:
+
+- `data`: Asset return matrix ($T \times N$).
+- `factors`: Risk factor matrix ($T \times F$).
+- `alpha`: Confidence level for defining extreme conditions.
+
+2. **Data Transformation**: The `_transform_to_uniform` method transforms raw data to the uniform space $[0, 1]$ using the empirical cumulative distribution function (CDF).
+
+3. **Extreme Event Identification**: The `_get_extreme_indices` method identifies indices corresponding to extreme events, where the risk factor falls below the $\alpha$-quantile.
+
+4. **Single CCVaR Calculation**: The `calculate_ccvar` method computes CCVaR for a single asset with respect to a specific risk factor.
+
+5. **CCVaR Matrix Calculation**: The `calculate_all_ccvar` method generates a matrix of CCVaR values for all assets and risk factors.
+
+6. **Result Summarization**: The `summarize_results` method outputs the CCVaR matrix with labels for assets and factors.
 
 ### 3.3 Results
 
