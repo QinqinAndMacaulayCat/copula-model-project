@@ -30,7 +30,7 @@ class CVine(object):
         self.U = U
         self.T = U.shape[0]
         self.variable_num = U.shape[1] - 1  # to make the structure more clear, all the variables are indexed from 0. Therefore, when the variable_num is n, we actually have n+1 variables x0, x1, ..., xn.
-        self.dependence = dependence # if dependence is None, we assume all the variables are dependen . if not, the copula function between independent variables will be 1.
+        self.dependence = dependence if dependence is not None else np.ones((self.variable_num+1, self.variable_num+1)) # if dependence is None, we assume all the variables are dependen . if not, the copula function between independent variables will be 1.
         if copulaType == "Clayton":
             self.copula = Clayton()
         else:
@@ -58,6 +58,7 @@ class CVine(object):
         layer["nodenum"] = self.variable_num
         layer["edgenum"] = self.variable_num 
         layer["node"] = list(range(0, layer["nodenum"] + 1))
+        layer["dependence"] = self.dependence[0, :]
         self.tree["structure"][0] = layer
 
         
@@ -76,11 +77,7 @@ class CVine(object):
         layer["nodenum"] = last_layer["nodenum"] - 1
         layer["edgenum"] = layer["nodenum"]
         layer["node"] = list(range(0, layer["nodenum"]+ 1))
-        (layer["pair"], layer["node"], layer["parentnode"], layer["root"]) = self.pair_nodes(last_layer)
-
-        # todo dependence
-
-
+        (layer["pair"], layer["node"], layer["parentnode"], layer["root"], layer["dependence"]) = self.pair_nodes(last_layer)
         self.tree["structure"][layer["level"]] = layer
         self.tree["depth"] = self.tree["depth"] + 1
     
@@ -97,10 +94,17 @@ class CVine(object):
             pair_left = last_layer["node"][0]
             pairs = tuple(zip(last_layer["edgenum"] * [pair_left], last_layer["node"][1:]))
             parentnodes = dict(zip(nodes, pairs))
+            dependent = np.empty(last_layer["nodenum"] + 1)
+            dependent[0] = 1
+            for i in range(1, last_layer["nodenum"] + 1):
+                if i > 1: # todo  
+                    dependent[i] = 0 if self.dependence[pairs[-1][1], pairs[0][1]] == 0 else 1
+
             return (pairs, 
-                    nodes, 
-                    parentnodes, 
-                    [])
+                   nodes, 
+                   parentnodes, 
+                   [],
+                   dependent)
         else:
             pairs = []
             parentnodes = {}
@@ -110,15 +114,20 @@ class CVine(object):
 
             new_root = last_layer["root"] + [common_node]
             pair_left = last_pairs[0][1] # the right element in the center pair will be the left element in pairs in this layer. 
-
+            dependent = np.empty(last_layer["nodenum"] + 1)
+            dependent[0] = 1
             for i in range(1, last_layer["nodenum"] + 1):
                 pairs.append(tuple((pair_left, last_pairs[i][1])))
-                parentnodes[i-1] = (0, i)  # the i-1th node in this layer is from the pair (0, i) in last layer. ex. the first layer in the second layer is from the node pair (0, 1) in the first layer.
+                parentnodes[i-1] = (0, i)  # the i-1th node in this layer is from the pair (0, i) in last layer. ex. the first layer in the second layer is from the node pair (0, 1) in the first layer.   
+                if i > 1: # todo  
+                    dependent[i] = 0 if self.dependence[pairs[-1][1], pairs[0][1]] == 0 else 1
+
                 
         return (pairs, 
                 nodes,
                 parentnodes, 
-                new_root)
+                new_root,
+                dependent)
 
 
     def fit(self):
@@ -160,7 +169,6 @@ class CVine(object):
             self.tree["structure"][i]["V"] = self.get_layer_h(result.x, last_layer)
 
 
-        print("thetaMatrix", self.tree["thetaMatrix"])
 
     def simulate(self, n):
         """
@@ -220,9 +228,9 @@ class CVine(object):
         likelihood = 0
         
         for i in range(1, last_layer["nodenum"]+1): # totally l copula functions
-
+            
             self.copula.theta = thetaParams[i-1]
-            likelihood += np.nansum(np.log(self.copula.c(last_layer["V"][:, 0], last_layer["V"][:, i])))
+            likelihood += (np.nansum(np.log(self.copula.c(last_layer["V"][:, 0], last_layer["V"][:, i]))) if last_layer["dependence"][i] == 1 else 0)
         
         return -likelihood
 
