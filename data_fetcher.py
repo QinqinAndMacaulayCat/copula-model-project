@@ -58,18 +58,18 @@ class DataFetcher:
 
 
 
-# def generate_normal_bm(miu, sigma, n):
-#     # generate D ~ Exp(1 / 2)
-#     d = - 2 * np.log(np.random.uniform(0, 1, int(n / 2)))
-#
-#     # generate Θ ~ Unif(0, 2Π)
-#     theta = 2 * math.pi * np.random.uniform(0, 1, int(n / 2))
-#
-#     # generate X, Y ~ Normal(miu, sigma)
-#     X = np.sqrt(d) * np.cos(theta) * sigma + miu
-#     Y = np.sqrt(d) * np.sin(theta) * sigma + miu
-#     normal_random_variables = np.hstack((X, Y))
-#     return normal_random_variables
+def generate_normal_bm(miu, sigma, n):
+    # generate D ~ Exp(1 / 2)
+    d = - 2 * np.log(np.random.uniform(0, 1, int(n / 2)))
+
+    # generate Θ ~ Unif(0, 2Π)
+    theta = 2 * math.pi * np.random.uniform(0, 1, int(n / 2))
+
+    # generate X, Y ~ Normal(miu, sigma)
+    X = np.sqrt(d) * np.cos(theta) * sigma + miu
+    Y = np.sqrt(d) * np.sin(theta) * sigma + miu
+    normal_random_variables = np.hstack((X, Y))
+    return normal_random_variables
 
 
 # parameter_dict = {}
