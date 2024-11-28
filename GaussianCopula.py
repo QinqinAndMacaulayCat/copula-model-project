@@ -119,14 +119,13 @@ class GaussianCopula(object):
     def estimate_paras(self):
         return_data = self.data
         self.parameter_dict = {}
-        # assume all the returns satisfies gaussian distribution, estimate the parameters sigma and miu
         for ticker in self.tickers:
             miu = np.mean(return_data)
             sigma = np.std(return_data, ddof=0)
             self.parameter_dict[ticker] = [miu, sigma]
 
     def estimate_corr(self):
-        # assume the returns satisfies Multivariate Gaussian Distribution, estimate the covariance matrix
+        # estimate the covariance matrix
         mean = np.mean(self.data, axis=0)
         demeaned_data = self.data - mean
         covariance = (demeaned_data.T @ demeaned_data) / (self.n_index - 1)
@@ -134,7 +133,7 @@ class GaussianCopula(object):
         self.corr = covariance / np.outer(std, std)
 
     def generate_samples(self, n_samples):
-        # generate random variables from the estimated distribution
+        # generate random variables
         random_normal = generate_normal_bm(0, 1, n_samples * self.n_index).reshape(n_samples, self.n_index)
         U_matrix = cholesky_decomposition(self.corr)
         correlated_normal = random_normal @ U_matrix
@@ -142,11 +141,9 @@ class GaussianCopula(object):
         U = norm.cdf(correlated_normal)
         # map to marginal distributions
         sample_returns = []
-        i = 0
-        for ticker in self.tickers:
-            miu, sigma = self.parameter_dict[ticker]
-            returns_single_index = norm.ppf(U[:, i]) * sigma + miu  # Asset A returns
-            sample_returns.append(returns_single_index)
+        for i in range(self.data.shape[1]):
+            ppf_value = np.quantile(self.data[:, i], U[:, i])
+            sample_returns.append(ppf_value)
 
         sample_returns = np.array(sample_returns).T
 
