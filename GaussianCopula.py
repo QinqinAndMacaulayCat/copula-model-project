@@ -52,7 +52,7 @@ def positive_definite_matrix(matrix):
         print("The matrix is not positive definite matrix.")
         return False
 
-    for i in range(matrix.shape[0]):
+    for i in range(1, matrix.shape[0]):
         if cal_determinant(matrix[:i, :i]) <= 0:
             is_pd = False
 
