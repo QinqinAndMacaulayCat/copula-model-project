@@ -10,6 +10,8 @@ from distribution import Multivariate
 from VaR import CCVaR
 from data_fetcher import DataFetcher
 from GaussianCopula import GaussianCopula
+import warnings
+warnings.filterwarnings("ignore")
 
 
 
@@ -38,8 +40,6 @@ def main():
     cv.fit2()
     simulated_data = cv.simulate(n_samples)
     simulated_data_reversed = dataproc.empircal_ppf(simulated_data)
-
-    factors = simulated_data_reversed[:, :3] 
       
     np.savetxt("result/simulated_data_Gaussian.csv", 
                simulated_data_reversed,
@@ -47,16 +47,14 @@ def main():
                header=",".join(tickers))
 
     # CCVaR
+    n_factors = 3
 
-    ccvar_model = \
+    ccvar_model_Gaussian = \
         CCVaR(data=simulated_data_reversed,
-              factors=factors, alpha=0.05)
-    ccvar_value = \
-        ccvar_model.calculate_ccvar(
-                target_asset_index=0, 
-                factor_index=1)
-    print(f"CCVaR of Asset_1 with respect to Factor_2: \
-          {ccvar_value:.4f}")
+              n_factors=n_factors, alpha=0.05)
+
+    ccvar_model_Gaussian.plot_ccvar(asset_names=tickers, save=True, path="result/CCVaR_Gaussian")
+
 
     #Clayton
     cv_clayton = CVine(u, copulaType="Clayton")
@@ -68,19 +66,13 @@ def main():
     
     np.savetxt("result/simulated_data_Clayton.csv", 
                simulated_data_reversed_clayton, 
-               delimiter=",", header=",".join(tickers)) 
+               delimiter=",", header=",".join(tickers))
+
     # CCVaR
-    factors_clayton =  \
-        simulated_data_reversed_clayton[:, :3]
-    ccvar_model = \
+    ccvar_model_Clayton = \
         CCVaR(data=simulated_data_reversed_clayton, \
-          factors=factors_clayton, alpha=0.05)
-    ccvar_value = \
-        ccvar_model.calculate_ccvar(
-            target_asset_index=0,
-            factor_index=1)
-    print(f"CCVaR of Asset_1 with respect to Factor_2: \
-          {ccvar_value:.4f}")
+          n_factors=n_factors, alpha=0.05)
+    ccvar_model_Clayton.plot_ccvar(asset_names=tickers, save=True, path="result/CCVaR_Clayton")
     
     df_simuldata_Gaussian = pd.DataFrame(simulated_data, columns=tickers)
    
@@ -95,7 +87,6 @@ def main():
     gc.estimate_paras()
     gc.estimate_corr()
     simulated_data, simulated_data_reversed = gc.generate_samples(n_samples)
-    factors = simulated_data_reversed[:, :3]
 
     np.savetxt("result/simulated_data_GaussianMultivariate.csv",
                simulated_data_reversed,
@@ -103,15 +94,10 @@ def main():
                header=",".join(tickers))
 
     # CCVaR
-    ccvar_model = \
+    ccvar_model_gc = \
         CCVaR(data=simulated_data_reversed,
-              factors=factors, alpha=0.05)
-    ccvar_value = \
-        ccvar_model.calculate_ccvar(
-            target_asset_index=0,
-            factor_index=1)
-    print(f"CCVaR of Asset_1 with respect to Factor_2: \
-          {ccvar_value:.4f}")
+              n_factors=n_factors, alpha=0.05)
+    ccvar_model_gc.plot_ccvar(asset_names=tickers, save=True, path="result/CCVaR_gc")
 
     df_simuldata_GaussianM = pd.DataFrame(simulated_data, columns=tickers)
     corr_GaussianM = pd.DataFrame(df_simuldata_GaussianM).corr()
