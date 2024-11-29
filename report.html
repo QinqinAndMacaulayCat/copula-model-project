@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>report.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h2 id="1-introduction">1 Introduction</h2>
+<p>In this report, we refer to the paper by Bruneau et al.<sup><a href="#Bruneau2019">2</a></sup>
+to estimate the risk sensitivity of financial assets through multivariate copula. The structure of the report is as follows. First, we analyze the data and build models to realize transforming data from ppf to cdf and the inverse process. Second, we introduce the canonical vine and simulate data from the canonical vine which have the same dependences with our input data as the parameters of the canonical vine are fitted based on the input data. Third, we calculate the Cross Conditional Value at Risk (CCVaR).</p>
+<h2 id="2-modeling">2 Modeling</h2>
+<h3 id="21-pair-copula">2.1 Pair Copula</h3>
+<p>In this section, we basically refer to the models of the paper by Aas et al. <sup><a href="#Aas2009">1</a></sup>.</p>
+<h4 id="211-c-vine">2.1.1 C-Vine</h4>
+<p>Considering a multivariate cumulative distribution function $F$ of $n$ random variables $\textbf{X}=({X_1, ..., X_n})$ with marginal cumulative distributions $F_1(x_1), ..., F_n(x_n)$, Skalar's Theorem states that there exists a unique n-dimensional copula $C$ to describte the joint distribution of these these marginals, which is defined as:</p>
+<p>$$
+F(x_1, x_2, ..., x_n) = C(F_1(x_1), F_2(x_2), ..., F_n(x_n)).
+$$</p>
+<p>Here, let $F_i(x_i)=u_i$, the copula $C$ can be written as:</p>
+<p>$$
+C(u_1, u_2, ..., u_n) = F(F_1^{-1}(u_1), F_2^{-1}(u_2), ..., F_n^{-1}(u_n)).
+$$</p>
+<p>If $F$ is absolutely continuous with strictly increasing and continuous marginal cdf $F_i$, the joint density function $f$ can be written as:</p>
+<p>$$
+f(x_1, x_2, ..., x_n) = c_{1:n}(F_1(x_1), F_2(x_2), ..., F_n(x_n)) \cdot \prod_{i=1}^{n} f_i(x_i).
+$$</p>
+<p>which is the product of the n-dimensional copula density $c_{1:n}(\cdot)$ of $C$ and the marginal densities $f_i(\cdot)$.</p>
+<p>Building high-dimensional copulae is generally recognized as a challenging task. One of the most popular methods is the pair-copula construction (PCC) proposed by Aas et al. <sup><a href="#Aas2009">1</a></sup>. The idea is to construct a high-dimensional copula by combining bivariate copulae. The basic principle behind PCC is that the density can be factorized as:</p>
+<p>$$
+f(x_1, x_2, ..., x_n) = f_n(x_n) \cdot f(x_{n-1}|x_n) \cdot f(x_{n-2}|x_{n-1}, x_n) \cdot ... \cdot f(x_1|x_2, ..., x_n). , \tag{1}
+$$</p>
+<p>In a bivariate case, the density function is defined as:</p>
+<p>$$
+f(x_1, x_2) = c_{12} { F_1(x_1), F_2(x_2)} \cdot f_1(x_1) \cdot f_2(x_2).
+$$</p>
+<p>For a conditional density, it follows that:</p>
+<p>$$
+f(x_1|x_2) = c_{12}(F_1(x_1), F_2(x_2)) \cdot f_1(x_1).
+$$</p>
+<p>For case with three random variables, the conditional density is given by:</p>
+<p>$$
+f(x_1|x_2, x_3) = c_{13|2}{F(x_1|x_2), F(x_3|x_2)}\cdot f(x_1|x_2) \
+$$</p>
+<p>$$
+= c_{13|2}{F(x_1|x_2), F(x_3|x_2)}\cdot c_{12}(F(x_1), F(x_2)) \cdot {f(x_1)}.
+$$</p>
+<p>where two pair-copulae are involved.</p>
+<p>Based on the above, we can see each term in (1) can be decomposed into the appropriate pair-copula times a conditional marginal density, using the general formula:</p>
+<p>$$
+f(x| \textbf{v}) = c_{x v_j|\textbf{v}<em>{-j}}{F(x|\textbf{v}</em>{-j}), F(v_j|\textbf{v}<em>{-j})} \cdot f</em>{x}(\textbf{v}_{-j}).
+$$</p>
+<p>Here $\textbf{v}$ is a vector of variables, $\textbf{v}_{-j}$ is the vector $\textbf{v}$ with the $j$-th element removed.</p>
+<p>The pair-copula construction involves marginal conditional distribution of the form $F(x|\textbf{v})$. Joe <sup><a href="#Joe1996">4</a></sup> showed that, for every $j$ :</p>
+<p>$$
+F(x|\textbf{v}) = \frac{\partial C_{x v_j|\textbf{v}<em>{-j}}{F(x|\textbf{v}</em>{-j}), F(v_j|\textbf{v}<em>{-j})}}{\partial F(v_j|\textbf{v}</em>{-j})}.
+$$</p>
+<p>where $C_{ij|\textbf{v}}$ is a bivariate copula distribution function. d</p>
+<p>For the special case where $v$ is a univariate, we have:</p>
+<p>$$
+F(x|v) = \frac{\partial C_{x v}(F(x), F(v))}{\partial F(v)}.
+$$</p>
+<p>We will use the function $h(x, v, \Theta)$ to represent this conditional distribution function when $x$ and $v$ are uniform, which is defined as:</p>
+<p>$$
+h(x, v, \Theta) = F(x|v) = \frac{\partial C_{x v}(F(x), F(v))}{\partial F(v)}, \
+$$</p>
+<p>$$
+\Theta - \text{the set of parameters of the joint distribution function}.
+$$</p>
+<p>where the second parameter of $h(\cdot)$ always corresponds to the conditioning variable and $\Theta$ denotes the set of parameters for the copula of the joint distribution function of $x$ and $v$.</p>
+<p>Furture, let $h^{-1}(u, v, \Theta)$ be the inverse of the h-function with respect to $u$, or the equivalently the inverse of the conditional distribution function.</p>
+<p>For high-dimension distribution, there are significant number of possible pair-copular. To help organising them, Bedford and Cooke <sup><a href="#Cooke2001">5</a></sup> have introduced a graphical model denoted as the regular vine. Here, we concentrate on the special case of regular vines - the canonical vine (C-vine), which gives a specific way of decomposing the density. The figure below cited from Czado and Naglar <sup><a href="#Czado">3</a></sup> shows a C-vine with 5 variables. In a canonical vine tree all layers are stars: in every layer of the tree there is a single node, called the root, that is connecting all the others. In this figure, the root nodes are $1, (1, 4), (6, 4;1), (6,2;4,1), (5,2;6,4,1)$. [^1] Since all indices from previous root nodes are contained in the label of later root nodes, we can also specify the order by only referencing the index that enters in the next layer. For example the root node sequence in this figure can be written as $1, 4, 6, 2, 5, 3$.</p>
+<p>[^1]: In the code, we call the root here as central node.</p>
+<p><img src="reportfile/cvine.png" alt="C-vine"></p>
+<p>\newpage</p>
+<p>Based on the factorization discussed above, the n-dimensional density corresponding to a C-vine is given by:</p>
+<p>$$
+\prod_{k=1}^{n} f(x_k) \prod_{j=1}^{n-1} \prod_{i=1}^{n-j} c_{j, j+i|1, ..., j-1}{F(x_j|x_1, ..., x_{j-1}), F(x_{j+i}|x_1, ..., x_{j+i-1})}.
+$$</p>
+<p>Fitting a canonical vine might be advantageous when a particular variable is known to be a key variable that governs interaction in the data set. In such a situation one may decide to locate this variable at the root of the canonical vine, as we have done with variable in the figure.</p>
+<h4 id="212-simulation-from-a-pair-copula-decomposed-model">2.1.2 Simulation from a pair-copula decomposed model</h4>
+<p>In this section we show the simulation algorithm for canonical vines which follows the method discussed in Aas <sup><a href="#Aas2019">1</a></sup>.
+We assume for simplicity that all the margins of the distribution are uniform. [^2]</p>
+<p>[^2]: For variables with other marginal distributions, we transform the data to uniform marginals before fitting the vine copula.</p>
+<p>To sample n dependent uniform[0, 1] variables, we first sample $w_1, ..., w_n$ independent uniform on [0, 1] and the variables $x_1, ..., x_n$ are generated by applying successive inverse cumulative distribution functions. We refer to the method mentioned by Cooke <sup><a href="#Cooke2007">6</a></sup>. $w_1,...,w_n$ are values of $x_1, F(x_2|x_1), F(x_3|x_1, x_2), ... , F(x_n|x_1, x_2, ..., x_{n-1}$ respectively. And conditional distributions $F(x_n|x_1), F(x_n|x_1, x_2),...,F(x_n|x_1, x_2, ..., x_{n-1})$ can be found by conditionalizing copulae. Inverting the value of $w_n$ through $F(x_n|x_1), F(x_n|x_1, x_2), ... , F(x_n|x_1, x_2, ... , x_{n-1}$ gives $x_n$.
+This process is illustrated in the Cooke's figure below:</p>
+<p><img src="reportfile/staircase.png" alt="Staircase graph representation of canonical vine sampling procedure"></p>
+<p>\newpage</p>
+<p>Sample $x_n$ as follows:</p>
+<p>$$
+x_n = F^{-1}<em>{x_n|x_1}(F^{-1}</em>{x_n|x_1,x_2}(...(F^{-1}<em>{x_n|x_1,...,x</em>{n-1}}(w_n))...)).
+$$</p>
+<p>As we mentioned before, the conditional distribution functions $F(x_i|x_1, ..., x_{i-1})$ can be computed by the h-function. Therefore, the algorithm is also <sup><a href="#Aas2009">1</a></sup> for sampling from a canonical vine is as follows:</p>
+<p><img src="reportfile/algo1.png" alt="simulation algorithm"></p>
+<p>\newpage</p>
+<p>The outer loop runs over the variables to be sampled. This loop consists of two other for-loops. In the first, the ith varaible is sampled, while in the other, the conditional distribution functions needed for sampling the $(i+1)$th variable are updated. To compute these conditional distribution functions, we repeatedly use the h-function, with previously computed conditional distribution functions, $v_{i,j}=F(x_i|x_1, ..., x_{j-1})$, as the first two arguments.The last argument of the h-function is the parameter $\Theta_{j,i}$ of the corresponding copula density $c_{j,j+i}|1,...,j-1(\cdot, \cdot)$.
+The actually work flow for each loop is as follows(taking $i=n$ as example):</p>
+<p>$$
+h^{-1}(v_{n,1}, v_{n-1, n-1}, \Theta{n-1,1}) \
+$$</p>
+<p>$$
+=h^{-1}(w_i, F(x_{n-1}|x_1, ..., x_{n-2}), \Theta_{n-1,1}) \
+=F(x_n|x_1, ..., x_{i-2}).
+$$</p>
+<p>$$
+h^{-1}{v_{n,1}, v_{n-2, n-2}, \Theta{n-2, 2}} \
+$$</p>
+<p>$$
+= h^{-1}(F(x_n|x_1, ..., x_{n-2}), F(x_{n-1}|x_1, ..., x_{n-3}), \Theta_{n-2, 2}) \
+$$</p>
+<p>$$
+= F(x_n|x_1, ..., x_{n-3}).
+$$</p>
+<p>$$
+...</p>
+<p>$$</p>
+<p>$$
+h^{-1}(v_{n,1}, v_{1, 1}, \Theta_{1, n-1}) \
+$$</p>
+<p>$$
+= h^{-1}(F(x_n|x_1), x_1, \Theta_{1, n-1}) = F(x_n).
+$$</p>
+<p>\newpage</p>
+<h4 id="213-estimation-of-the-parameters">2.1.3 Estimation of the parameters</h4>
+<p>In this section we describe how the parameters of the canonical vine density are estimated. To simplify the process as mentioned before, we assumme that the marginals are uniform and the the time series is stationary and independent over time. This assumption is not limiting, as we can always preprocess the data through models such as ARIMA and GARCH to make the input of the canonical vine model stationary.</p>
+<p>We use the maximum likelihood method to estimate the parameters of the canonical vine. Since the actual margins are normally unknown in practice, what is being maximised is a pseudo-likelihood.</p>
+<p>The log-likelihood is given by:</p>
+<p>$$
+\sum_{j=1}^{n-1} \sum_{i=1}^{n-j} \sum_{t=1}^{T} \log c_{j, j+i|1, ..., j-1}{F(x_{j,t}|x_{1,t}, ..., x_{j-1,t}), F(x_{i+j,t}|x_{1,t}, ..., x_{j-1,t})}.
+$$</p>
+<p>For each copula in the above formula, there is at least one parameter to be determined. The algorithm for estimating the parameters is listed below in the figure. The ourter for-loop corresponds to the outer sum in the pseudo-likelihood. The inner for-loop corresponds to the sum over i. The innermost for-loop corresponds to the sum over the time series. Here, the element t of $textbf{v}<em>{j,i}$ is $v</em>{j, i, t} = F(x_{i, t}|x_{1,t},...,x_{j,t})$. $L(\textbf{x}, \textbf{v}, \Theta)$ is the log-likelihood of the chosen bivariate copula with parameters $\Theta$ and the data $\textbf{x}$ and $\textbf{v}$. That is,</p>
+<p>$$
+L(\textbf{x}, \textbf{v}, \Theta) = \sum_{t=1}^{T} \log c(x_t, v_t, \Theta),\
+c(u, v, \Theta) \text{is the density of the bivariate copula with parameters $\Theta$}.
+$$</p>
+<p><img src="reportfile/algolikelihood.png" alt="estimation algorithm"></p>
+<p>\newpage</p>
+<p>Starting values of the parameters needed in the numerical maximization of the log-likelihood are determined as follows:</p>
+<ol>
+<li>
+<p>Estimate the parameters of the copulae in the first level of the vine tree from the original data.</p>
+</li>
+<li>
+<p>Compute observations for level 2 using the copula parameters from level 1 and the h-function.</p>
+</li>
+<li>
+<p>Estimate the parameters of the copulae in the second level of the vine tree from the observations computed in step 2.</p>
+</li>
+<li>
+<p>Repeat steps 2 and 3 until the parameters of all copulae in the vine tree have been estimated.</p>
+</li>
+</ol>
+<h4 id="214-copula-selection">2.1.4 Copula selection</h4>
+<p>In the above content, we introduce the canonical vine copula, the calibration of the parameters, and the simulation of the data. However, we didn't specify which copula to use in the pair-copula decomposition. The choice of copula is crucial for the performance of the model. We only show the Gaussian copula and Clayton copula in the following content. However, the C-Vine structure can be easily extended to other copulae through getting copula functions and h-functions.</p>
+<h4 id="2141-gaussian-copula">2.1.4.1 Gaussian copula</h4>
+<p>The density of the bivariate Gaussian copula is given by:</p>
+<p>$$
+c(u, v, \theta) = \frac{1}{\sqrt(1-\theta^2)} exp { -\frac{{\theta}^2 (x_1^2 + x_2^2) - 2 \theta x_1 x_2}{2(1-\theta^2)} }, -1 &lt; \theta &lt; 1.
+$$</p>
+<p>Here, $\theta$ is the correlation parameter, which is normally denoted as $\rho$. $x_1 = \Phi ^{-1}(u)$, $x_2 = \Phi^{-1}(v)$, and $\Phi$ is the standard normal distribution function.</p>
+<p>The h-function is given by:</p>
+<p>$$
+h(u, v, \theta) = \Phi(\frac{\Phi^{-1}(u) - \theta \Phi^{-1}(v)}{\sqrt{1-\theta^2}}).
+$$</p>
+<p>Suppose the h-function is equal to $w$, then the inverse h-function is given by:</p>
+<p>$$
+h^{-1}(w, v, \theta) = \Phi{ \Phi^{-1}(w) \sqrt{1-\theta^2} + \theta \Phi^{-1}(v) }
+$$</p>
+<h4 id="2142-clayton-copula">2.1.4.2 Clayton copula</h4>
+<p>The density of Clayton copula is given by:</p>
+<p>$$
+c(u, v, \theta) = (1 + \theta)(u \cdot v)^{-\theta} - 1) \times (u^{-\theta} + v^{-\theta} - 1)^{-1/\theta - 2}, \theta \in [-1, \infty) \ 0.
+$$</p>
+<p>Perfect dependence is obtained when $\theta \rightarrow \infty$.</p>
+<p>For this copula the h-function is given by:</p>
+<p>$$
+h(u, v, \theta) = v^{-\theta-1}(u^{-\theta} + v^{-\theta} - 1){-1 - \theta}.
+$$</p>
+<p>Suppose the h-function is equal to $w$, then the inverse h-function is given by:</p>
+<p>$$
+h^{-1}(w, v, \theta) = {(w \cdot v^{\theta+1})^{\frac{\theta}{\theta+1}} + 1-v^{-\theta}}^{-1/\theta}.
+$$</p>
+<h3 id="22-gaussian-copula">2.2 Gaussian Copula</h3>
+<p>A Gaussian Copula that the dependency structure between the multiple random variavles is Gaussian dependency. We introduce Gaussian Copula here to compare it with CVine.</p>
+<h4 id="221-mathematical-representation">2.2.1 Mathematical Representation</h4>
+<p>Let $\Phi$ be the standard normal CDF and $\Phi_{\Sigma}$ is the CDF of a multivariate normal distribution with correlation matrix $\Sigma$. For random variables $(U_1, U_2, \ldots, U_d)$ with uniform marginals, the Gaussian Copula $(C)$ is defined as:</p>
+<p>$$
+C(u) = \Phi_{\Sigma}(\Phi^{-1}(u_1), \Phi^{-1}(u_2), \ldots, \Phi^{-1}(u_d))
+$$</p>
+<h4 id="222-cholesky-decomposition">2.2.2 Cholesky Decomposition</h4>
+<p>Cholesky decomposition is a matrix factorization technique used for symmetric, positive-definite matrix. It expresses a matrix as the product of a lower triangular matrix and its transpose.</p>
+<p>Given a symmetric, positive-definite matrix $A$, the Cholesky decomposition finds a upper triangular matrix $U$ such that:</p>
+<p>$$
+A = LL^\top
+$$</p>
+<p>where:</p>
+<ul>
+<li>$L$ is a lower triangular matrix with real, positive diagonal entries.</li>
+<li>$L^\top$ is the transpose of $L$.</li>
+</ul>
+<p>The algorithm is as follows:</p>
+<ol>
+<li>For a given matrix $A$, calculate each element of $L$ using:
+$$
+L_{i,i} = \sqrt{A_{i,i} - \sum_{k=1}^{i-1} L_{i,k}^2}
+$$
+$$
+L_{i,j} = \frac{1}{L_{j,j}} \left( A_{i,j} - \sum_{k=1}^{j-1} L_{i,k} L_{j,k} \right), \quad \text{for } i &gt; j
+$$</li>
+<li>Fill the matrix $L$ row by row.</li>
+</ol>
+<h4 id="223-steps-to-build-a-gaussian-copula">2.2.3 Steps to Build a Gaussian Copula</h4>
+<ol>
+<li>
+<p>Define the correlation matrix.</p>
+</li>
+<li>
+<p>Use Cholesky decomposition to decompose the correlation matrix.</p>
+</li>
+<li>
+<p>Generate independent standard normal random variables.</p>
+</li>
+<li>
+<p>Apply the decomposed matrix on these random variables to get correlated random variables.</p>
+</li>
+<li>
+<p>Map the random variables to uniform distributions by calculating their cumulative distribution function.</p>
+</li>
+</ol>
+<h4 id="224-comparison-between-gaussian-copula-and-cvine">2.2.4 Comparison between Gaussian Copula and CVine</h4>
+<p>In Gaussian Copula, the dependency is captured by a correlation matrix, while in CVne we models dependencies pairwisely. Here are some main difference between these two methods.</p>
+<ol>
+<li>
+<p>Gaussian Copula qssumes symmetric Gaussian dependency, which may not adequately represent tail dependencies. It underestimates the probability of extreme co-movements.</p>
+</li>
+<li>
+<p>In CVine, dependency is modeled with separate copulas, allowing for different types of relationships between variables. CVine can capture asymmetric dependencies and tail dependencies more effectively.</p>
+</li>
+<li>
+<p>Gaussian Copula only requires the Cholesky decomposition of the correlation matrix. So, the computation is flexible. However, CVine Copula More computationally intensive. It requires constructing and evaluating multiple pair-copulas and dependency trees.</p>
+</li>
+</ol>
+<h3 id="23-ccvar">2.3 CCVaR</h3>
+<p>The Cross Conditional Value at Risk (CCVaR) quantifies the expected return of an asset under the extreme conditions of a given risk factor. For an asset $R_i$ and a risk factor $X$, the CCVaR at confidence level $\alpha$ is defined as:</p>
+<p>$$
+CCVaR_\alpha(R_i \mid X; F_X) = \mathbb{E}[R_i \mid F_X(X) \leq \alpha],
+$$</p>
+<p>where:</p>
+<p>$$
+F_X(X): \text{ the cumulative distribution function (CDF) of the risk factor } X,
+$$</p>
+<p>$$
+\alpha: \text{ the confidence level defining the extreme quantile (e.g., } \alpha = 0.05 \text{ for the worst 5 %)}.
+$$</p>
+<p>\newpage</p>
+<h2 id="3-implementation">3 Implementation</h2>
+<h3 id="31-data">3.1 Data</h3>
+<h3 id="32-code">3.2 Code</h3>
+<h4 id="321-data-fetcher">3.2.1 Data Fetcher</h4>
+<ol>
+<li>
+<p><strong><code>__init__(self, tickers: list, start_date: datetime, end_date: datetime)</code></strong> - This method initializes the <code>DataFetcher</code> object. It takes in three arguments:</p>
+<ul>
+<li><code>tickers</code>: a list of stock or index tickers,</li>
+<li><code>start_date</code>: the start date for fetching historical data,</li>
+<li><code>end_date</code>: the end date for the data fetching period.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>fetch_and_save_data(self)</code></strong> - It uses <code>yfinance</code> to download the adjusted closing prices for each ticker between the specified <code>start_date</code> and <code>end_date</code>. The downloaded data is then forward-filled for any missing values and saved to the CSV file. Finally, it computes the percentage change of the adjusted closing prices, dropping any rows with missing values.</p>
+</li>
+<li>
+<p><strong><code>plot_distribuion(self)</code></strong> - This method generates and displays histograms of the return distributions for each ticker in the <code>tickers</code> list.</p>
+</li>
+</ol>
+<p>Here， we choosed a list of tickers (tickers = ['^GSPC', '^DJI', '^TNX', '^IXIC', '^RUT']), representing the five financial instruments of S&amp;P 500 Index, Dow Jones Industrial Average, CBOE 10-Year Treasury Note Yield, NASDAQ Composite Index and Russell 2000 Index. The start date of our data is set to January 1st, 2023, and the end date is set to November 1st, 2024. Using these parameters, we fetched historical market data of indices from Yahoo Finance. Then, we calculated the return of these indices and dropped invalid data as the input of our model.</p>
+<h4 id="322-distribution">3.2.2 Distribution</h4>
+<p>In this code, the <code>Multivariate</code> class is designed to perform various multivariate statistical operations on a given dataset. The class includes methods for calculating empirical cumulative distribution functions (ECDF), empirical percent-point functions (PPF), extreme value correlation, and visualization of data through heatmaps and kernel density estimation (KDE) plots. The main methods in the class are:</p>
+<ol>
+<li>
+<p><strong><code>__init__(self, data)</code></strong> - This is the initialization method of the <code>Multivariate</code> class. It takes a <code>data</code> argument. The method calculates and stores the covariance and correlation matrices of the data.</p>
+</li>
+<li>
+<p><strong><code>empircal_cdf(self)</code></strong> - This method computes the empirical cumulative distribution function (ECDF) for each column of the dataset. The ECDF is calculated by ranking the values in each column and dividing by the total number of data points. The result is stored in the <code>self.ecdf</code> attribute, and the method prints the rank of the data along with its length for verification. It returns the calculated ECDF values.</p>
+</li>
+<li>
+<p><strong><code>empircal_ppf(self, u)</code></strong> - This method calculates the empirical percent-point function (PPF) for a given set of quantiles (<code>u</code>). It iterates through each column in the data and computes the quantile value at the corresponding position in <code>u</code> for each column. The method returns an array of PPF values, which are the inverse of the ECDF.</p>
+</li>
+<li>
+<p><strong><code>extreme_value_correlation(df, percentile=95, direction=&quot;upper&quot;)</code></strong> - This static method computes the extreme value correlation for a dataset by analyzing the tail behavior of the data. It first calculates the threshold for each column at a given percentile. It then calculates the correlation of extreme values by checking how often two columns both exceed their respective thresholds (upper or lower). The result is returned as a correlation matrix showing the conditional probability of extreme values occurring together for each pair of columns.</p>
+</li>
+<li>
+<p><strong><code>heatmap(data, title)</code></strong> - This static method generates a heatmap visualization for the given data. It creates a heatmap from the data which can be used to visualize the relationships or correlations between different variables in the dataset.</p>
+</li>
+<li>
+<p><strong><code>plot_kde_comparison(df, title)</code></strong> - This method creates a pairplot to compare the kernel density estimates (KDE) of the variables. The pairplot visualizes both scatter plots and KDEs on the diagonal. This method is useful for understanding the pairwise relationships and distributions of variables in the dataset.</p>
+</li>
+</ol>
+<h4 id="323-cvine">3.2.3 CVine</h4>
+<p>In this code, we use the class <code>CVine</code> to realize the canonical vine copula. Basically, the class involves the following methods:</p>
+<ol>
+<li>
+<p><strong>build_tree()</strong> - to build the tree structure of the canonical vine copula. This method will fill the class attribute <code>tree</code> with the tree structure.</p>
+</li>
+<li>
+<p><strong>fit()</strong> - to fit the canonical vine copula to the data. This method will estimate the parameters of the copulae in the vine tree, which will call the method <code>get_likelihood()</code> to calculate the log-likelihood of the tree. Here, we use <code>scipy.optimize.minimize</code> to maximize the log-likelihood.</p>
+</li>
+<li>
+<p><strong>simulate()</strong> - to simulate data from the canonical vine copula. This method will simulate data from the fitted vine copula. In this algorithm, we generate independent uniform random variables and then use the algorithm mentioned in Section 2 to generate dependent uniform random variables.</p>
+</li>
+</ol>
+<h3 id="323-gaussian-copula">3.2.3 Gaussian Copula</h3>
+<p>In this code, we use the class <code>GaussianCopula</code> to implement a Gaussian copula for modeling dependencies between multiple variables. The class involves several key methods, each performing distinct tasks in the copula modeling process:</p>
+<ol>
+<li>
+<p><strong>estimate_paras()</strong> - This method estimates the parameters (mean and standard deviation) for each variable in the dataset. It calculates the mean (<code>miu</code>) and standard deviation (<code>sigma</code>) for each variable in the dataset and stores these parameters in the <code>parameter_dict</code> attribute. These parameters are essential for understanding the marginal distributions of the individual variables before applying the copula.</p>
+</li>
+<li>
+<p><strong>estimate_corr()</strong> - This method estimates the correlation matrix from the dataset. It first centers the data by subtracting the mean of each variable and then computes the covariance matrix. The covariance matrix is normalized by dividing by the product of the standard deviations of the variables to obtain the correlation matrix. This matrix captures the dependencies between the variables, which will later be used to introduce correlation in the simulated data.</p>
+</li>
+<li>
+<p><strong>generate_samples(n_samples)</strong> - This method generates samples from the fitted Gaussian copula. It first creates independent random variables using the <code>generate_normal_bm</code> function, which generates standard normal random variables using the Box-Muller method. Then, it applies the Cholesky decomposition to the correlation matrix to introduce the dependency structure between the variables. The uncorrelated normal variables are multiplied by the Cholesky factor, resulting in correlated normal variables. These are then transformed into uniform random variables using the cumulative distribution function (CDF) of the normal distribution. Finally, the uniform random variables are mapped back to the marginal distributions using the inverse cumulative distribution (quantile function), generating correlated sample returns from the copula.</p>
+</li>
+</ol>
+<h4 id="324-ccvar">3.2.4 CCVar</h4>
+<p>In this section, we describe the code implementation of CCVaR using Python. The implementation is encapsulated in the <code>CCVaR</code> class, which contains methods to calculate CCVaR for single asset-factor pairs and generate a CCVaR matrix for all assets and factors.</p>
+<ol>
+<li><strong>Initialization</strong>: The <code>__init__</code> method initializes the CCVaR model by taking the following inputs:</li>
+</ol>
+<ul>
+<li><code>data</code>: Asset return matrix ($T \times N$).</li>
+<li><code>factors</code>: Risk factor matrix ($T \times F$).</li>
+<li><code>alpha</code>: Confidence level for defining extreme conditions.</li>
+</ul>
+<ol start="2">
+<li>
+<p><strong>Data Transformation</strong>: The <code>_transform_to_uniform</code> method transforms raw data to the uniform space $[0, 1]$ using the empirical cumulative distribution function (CDF).</p>
+</li>
+<li>
+<p><strong>Extreme Event Identification</strong>: The <code>_get_extreme_indices</code> method identifies indices corresponding to extreme events, where the risk factor falls below the $\alpha$-quantile.</p>
+</li>
+<li>
+<p><strong>Single CCVaR Calculation</strong>: The <code>calculate_ccvar</code> method computes CCVaR for a single asset with respect to a specific risk factor.</p>
+</li>
+<li>
+<p><strong>CCVaR Matrix Calculation</strong>: The <code>calculate_all_ccvar</code> method generates a matrix of CCVaR values for all assets and risk factors.</p>
+</li>
+<li>
+<p><strong>Result Summarization</strong>: The <code>summarize_results</code> method outputs the CCVaR matrix with labels for assets and factors.</p>
+</li>
+</ol>
+<p>\newpage</p>
+<h3 id="33-results">3.3 Results</h3>
+<h4 id="331-distribution">3.3.1 Distribution</h4>
+<h4 id="332-cvine-and-multivariate-gaussian-copula">3.3.2 CVine and Multivariate Gaussian Copula</h4>
+<p>We test the <code>CVine</code> and <code>GaussianCopula</code>based on the return data of the assets.</p>
+<p>We first show the correlation matrix of the returns of our initial data and the correlation of the returns of the simulated data from CVine (Gaussian copula and Clayton copula) and Multivariate Gaussian Copula. The results are shown below:</p>
+<p><img src="result/Correlation_Matrix_of_Initial_Data.png" alt="Correlation matrix of the returns of the initial data"></p>
+<p>\newpage</p>
+<p><img src="result/Correlation_Matrix_of_Gaussian_Copula.png" alt="Correlation matrix of the returns of the simulated data from Gaussian copula"></p>
+<p>\newpage</p>
+<p><img src="result/Correlation_Matrix_of_Clayton_Copula.png" alt="Correlation matrix of the returns of the simulated data from Clayton copula"></p>
+<p>\newpage
+<img src="result/Correlation_Matrix_of_GaussianM.png" alt="Correlation matrix of the returns of the simulated data from Clayton copula"></p>
+<p>\newpage</p>
+<p>Basically, the correlation matrix of the returns of the simulated data from the copulae is similar to the correlation matrix of the returns of the initial data. However, we can see that the level of Pearson correlation is different.</p>
+<p>Then we show the scatter plot of the returns of the initial data and the scatter plot of the returns of the simulated data from CVine and Gaussian Copula. The results are shown below:</p>
+<p><img src="result/Compare_CDFs_of_Initial_Data.png" alt="Scatter plot of the returns of the initial data"></p>
+<p>\newpage</p>
+<p><img src="result/Compare_CDFs_of_Gaussian_Copula.png" alt="Scatter plot of the returns of the simulated data from Gaussian copula"></p>
+<p>\newpage</p>
+<p><img src="result/Compare_CDFs_of_Clayton_Copula.png" alt="Scatter plot of the returns of the simulated data from Clayton copula"></p>
+<p>\newpage</p>
+<p><img src="result/Compare_CDFs_of_Gaussian_Copula.png" alt="Scatter plot of the returns of the simulated data from Clayton copula"></p>
+<p>\newpage</p>
+<p>We can see that the scatter plot of the returns of the simulated data from the copulae is basically similar to the scatter plot of the returns of the initial data, which means the copulae can capture the dependence structure of the data. However, the correlation of the simulated results may perform differently from the initial data when the assets don't have clear correlation structure.</p>
+<p>Finally, we test the extreme dependence between the returns of the assets as the Clayton copula should have reflected the lower tail dependence. We simply calculate a matrix to evaluate the level of extreme dependence between the returns of the assets. For the value in i-th row and j-th column, it is the probability that the return of the j-th asset is below the 5% quantile given the return of the i-th asset is below the 5% quantile. The results are shown below:</p>
+<p><img src="result/lower_correlation.png" alt="Extreme dependence between the returns of the assets"></p>
+<p>\newpage</p>
+<p>In CVine, the average value of the Clayton copula is higher than the Gaussian copula, which means the Clayton copula has a higher level of extreme dependence between the returns of the assets.</p>
+<p>In Multivariate Gaussian Copula, we get a even higher correlation. It may mean that the Multivariate Gaussian Copula overestimates linear dependency between variables.</p>
+<p>Our results shows that CVine are more applicable in more complex dependent relationships.</p>
+<h4 id="333-ccvar">3.3.3 CCVaR</h4>
+<p>\newpage</p>
+<h2 id="4-conclusion">4 Conclusion</h2>
+<p>The canonical vine copula is a powerful tool for modeling the dependence structure of multivariate data. In this report, we have introduced the canonical vine copula and its application in estimating the risk sensitivity of asset portfolios. We have implemented the canonical vine copula in Python and demonstrated its use in simulating data and estimating the parameters of the copulae. Besides, we compared our results of CVine and Multivariate Gaussian Copula and find that CVine is more useful in depicting non-linear relationships. We have also implemented the Cross Conditional Value at Risk (CCVaR) to quantify the expected return of an asset under extreme conditions of a given risk factor. The CCVaR provides a useful measure of the risk sensitivity of asset portfolios to different risk factors. Further research can explore the application of the canonical vine copula in asset portfolio optimization and risk management. The drawbacks of our implementation include that we have not compare the results of different copulae and simply assume returns follow Gaussian Copula.</p>
+<p>\newpage</p>
+<h2 id="references">References</h2>
+<p><a id="Aas2009"></a> [1] Aas, K., Czado, C., Frigessi, A., and Bakken, H. (2009). Pair-copula constructions of multiple dependence. Insurance: Mathematics and Economics, 44(2), 182-198.</p>
+<p><a id="Bruneau2019"></a> [2] Catherine Bruneau, Alexis Flageollet, and Zhun Peng. (2019). Vine Copula Based Modeling.</p>
+<p><a id="Czado"></a> [3] Claudia Czado and Thomas Naglar. (2021). Vine copula based modeling.</p>
+<p><a id="Joe1996"></a> [4] Joe, H., 1996. Families of m-variate distributions with given marginals and bivariate dependence parameters.</p>
+<p><a id="Cooke2001"></a> [5] Bedford, T., Cooke, R.M., 2001b. Probability density decomposition for conditionally dependent random variables modeled by vines. Annals of Mathematics and Artificial Intelligence 32, 245–268.</p>
+<p><a id="Cooke2007"></a> [6] D. Kurowicka, R.M. Cooke, Sampling algorithms for generating joint uniform distributions using the vine-copula method, Computational Statistics &amp; Data Analysis, Volume 51, Issue 6, 2007, Pages 2889-2906, ISSN 0167-9473, https://doi.org/10.1016/j.csda.2006.11.043.</p>
+<h2 id="appendix">Appendix</h2>
+<h3 id="a-code">A Code</h3>
+<h4 id="a1-cvine">A.1 CVine</h4>
+<pre class="hljs"><code><div>
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">from</span> scipy.optimize <span class="hljs-keyword">import</span> minimize
+<span class="hljs-keyword">from</span> copula <span class="hljs-keyword">import</span> Clayton, Gaussian
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CVine</span><span class="hljs-params">(object)</span>:</span>
+    layer = {<span class="hljs-string">"root"</span>: [], 
+             <span class="hljs-comment"># list of root nodes.</span>
+             <span class="hljs-comment">#ex. in F(u1, u2|v), v is the root node </span>
+             <span class="hljs-string">"parentnode"</span>: {},
+             <span class="hljs-comment"># index of nodes in last level. </span>
+             <span class="hljs-comment"># ex. {1: (1,2)} means the node 1 in this tree level </span>
+             <span class="hljs-comment"># got from the node pair (1,2) in last level</span>
+             <span class="hljs-string">"node"</span>: [], 
+             <span class="hljs-comment"># index of the nodes. </span>
+             <span class="hljs-comment"># from 0 to l. this is not the initial index.</span>
+             <span class="hljs-string">"pair"</span>: [],
+             <span class="hljs-comment"># list of node pairs in the tree,</span>
+             <span class="hljs-comment"># ex. in F(u1, u2|v), (u1, u2) is a node pair. </span>
+             <span class="hljs-comment"># here the node pair is the index of nodes in the root,</span>
+             <span class="hljs-comment">#which is different from the "node". </span>
+             <span class="hljs-string">"level"</span>: <span class="hljs-number">0</span>, 
+             <span class="hljs-comment"># level of the tree (k). </span>
+             <span class="hljs-comment"># 0-root, 1-1st level, 2-2nd level, ...</span>
+             <span class="hljs-string">"nodenum"</span>: <span class="hljs-number">0</span>, 
+             <span class="hljs-comment"># number of the nodes in this tree (l). </span>
+             <span class="hljs-comment"># equal to n - k </span>
+             <span class="hljs-string">"edgenum"</span>: <span class="hljs-number">0</span>, 
+             <span class="hljs-comment"># number of the edges in this tree.</span>
+             <span class="hljs-comment"># equal to l as our node number is</span>
+             <span class="hljs-comment"># the actual number minus1.</span>
+             <span class="hljs-string">"V"</span>: <span class="hljs-literal">None</span>,  
+             <span class="hljs-comment"># h functions in this level. </span>
+             <span class="hljs-comment">#V[:, j] is the h function of node j.</span>
+             }    
+
+    tree = {<span class="hljs-string">"thetaMatrix"</span>: <span class="hljs-literal">None</span>,
+            <span class="hljs-comment"># copula parameter matrix in this level.</span>
+            <span class="hljs-comment"># it is a upper matrix. thetaMatrix[i, j] is </span>
+            <span class="hljs-comment"># the copula parameter in level j </span>
+            <span class="hljs-comment"># between node 1 and node i+1. </span>
+            <span class="hljs-string">"structure"</span>: {}, 
+            <span class="hljs-comment"># the tree structure in this level.</span>
+            <span class="hljs-comment"># the key is the node index, </span>
+            <span class="hljs-comment"># the value is layer.</span>
+            <span class="hljs-string">"depth"</span>: <span class="hljs-number">0</span>, 
+            <span class="hljs-comment"># the depth of the tree, </span>
+            <span class="hljs-comment"># 0 means only has root. </span>
+            }
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, U, copulaType=<span class="hljs-string">"Clayton"</span>)</span>:</span>
+        
+        <span class="hljs-string">"""
+        U: np.array, data matrix. 
+        follows uniform distribution
+
+        """</span>
+        self.U = U
+        self.T = U.shape[<span class="hljs-number">0</span>]
+        self.variable_num = U.shape[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span> 
+        <span class="hljs-comment"># to make the structure more clear, </span>
+        <span class="hljs-comment"># all the variables are indexed from 0. </span>
+        <span class="hljs-comment"># Therefore, when the variable_num is n,</span>
+        <span class="hljs-comment"># we actually have n+1 variables x0, x1, ..., xn.</span>
+        <span class="hljs-keyword">if</span> copulaType == <span class="hljs-string">"Clayton"</span>:
+            self.copula = Clayton()
+        <span class="hljs-keyword">elif</span> copulaType == <span class="hljs-string">"Gaussian"</span>:
+            self.copula = Gaussian()
+
+        <span class="hljs-keyword">else</span>:
+            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">"The copula type\
+                             is not supported."</span>)
+
+        self.max_depth = self.variable_num  
+        <span class="hljs-comment"># todo: the max_depth is not implemented yet.</span>
+        
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">build_tree</span><span class="hljs-params">(self)</span>:</span>
+        <span class="hljs-string">"""
+        build the tree structure. 
+        """</span>
+        self.build_root()
+        <span class="hljs-keyword">while</span> self.tree[<span class="hljs-string">"depth"</span>] &lt; self.max_depth:
+            self.build_kth_tree()
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">build_root</span><span class="hljs-params">(self)</span>:</span>
+        <span class="hljs-string">"""
+        build the root of the tree. the root is basically 
+        """</span>
+        
+        layer = self.layer.copy()
+        layer[<span class="hljs-string">"level"</span>] = <span class="hljs-number">0</span>
+        layer[<span class="hljs-string">"V"</span>] = self.U.copy() 
+        <span class="hljs-comment"># the F(x|v) in the first layer </span>
+        <span class="hljs-comment"># is the empirical cdf of x. </span>
+        layer[<span class="hljs-string">"nodenum"</span>] = self.variable_num
+        layer[<span class="hljs-string">"edgenum"</span>] = self.variable_num 
+        layer[<span class="hljs-string">"node"</span>] = list(range(<span class="hljs-number">0</span>, layer[<span class="hljs-string">"nodenum"</span>] + <span class="hljs-number">1</span>))
+        self.tree[<span class="hljs-string">"structure"</span>][<span class="hljs-number">0</span>] = layer
+
+        
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">build_kth_tree</span><span class="hljs-params">(self)</span>:</span>
+        <span class="hljs-string">"""
+        build the kth tree. 
+        """</span>
+
+        <span class="hljs-keyword">if</span> self.tree[<span class="hljs-string">"depth"</span>] &gt;= self.variable_num:
+            print(<span class="hljs-string">"The tree depth is already the maximum."</span>)
+
+        last_layer =\
+         self.tree[<span class="hljs-string">"structure"</span>][self.tree[<span class="hljs-string">"depth"</span>]]
+
+        layer = self.layer.copy()
+        layer[<span class="hljs-string">"level"</span>] = \
+         last_layer[<span class="hljs-string">"level"</span>] + <span class="hljs-number">1</span>
+        layer[<span class="hljs-string">"nodenum"</span>] =\
+         last_layer[<span class="hljs-string">"nodenum"</span>] - <span class="hljs-number">1</span>
+        layer[<span class="hljs-string">"edgenum"</span>] = layer[<span class="hljs-string">"nodenum"</span>]
+        layer[<span class="hljs-string">"node"</span>] = \
+        list(range(<span class="hljs-number">0</span>, layer[<span class="hljs-string">"nodenum"</span>]+ <span class="hljs-number">1</span>))
+        (layer[<span class="hljs-string">"pair"</span>], layer[<span class="hljs-string">"node"</span>], \
+         layer[<span class="hljs-string">"parentnode"</span>], layer[<span class="hljs-string">"root"</span>]) = \
+        self.pair_nodes(last_layer)
+        self.tree[<span class="hljs-string">"structure"</span>][layer[<span class="hljs-string">"level"</span>]] = layer
+        self.tree[<span class="hljs-string">"depth"</span>] = self.tree[<span class="hljs-string">"depth"</span>] + <span class="hljs-number">1</span>
+    
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">pair_nodes</span><span class="hljs-params">(self, last_layer)</span>:</span>
+        <span class="hljs-string">"""
+        pair the nodes in this layer. 
+        here we use the first node in each level 
+        as the new central node and combine it 
+        with the root in last level to get the new root. 
+        This process is same as the process we show in the report.
+        """</span>
+
+
+        nodes = range(<span class="hljs-number">0</span>, last_layer[<span class="hljs-string">"nodenum"</span>] + <span class="hljs-number">1</span>)
+
+        <span class="hljs-keyword">if</span> last_layer[<span class="hljs-string">"level"</span>] == <span class="hljs-number">0</span>: 
+            <span class="hljs-comment"># the second layer is not conditional copula,</span>
+            <span class="hljs-comment"># so we just combine the center node with </span>
+            <span class="hljs-comment"># neighor nodes without any condition.</span>
+            pair_left = last_layer[<span class="hljs-string">"node"</span>][<span class="hljs-number">0</span>]
+            pairs = tuple(zip(last_layer[<span class="hljs-string">"edgenum"</span>] * \
+                              [pair_left], 
+                              last_layer[<span class="hljs-string">"node"</span>][<span class="hljs-number">1</span>:]))
+            parentnodes = dict(zip(nodes, pairs))
+            dependent = np.empty(last_layer[<span class="hljs-string">"nodenum"</span>] + <span class="hljs-number">1</span>)
+            <span class="hljs-keyword">return</span> (pairs, 
+                   nodes, 
+                   parentnodes, 
+                   [])
+        <span class="hljs-keyword">else</span>:
+            pairs = []
+            parentnodes = {}
+            last_pairs = last_layer[<span class="hljs-string">"pair"</span>]
+            
+            common_node = last_pairs[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>] 
+            <span class="hljs-comment"># set the first node as center node in each layer.</span>
+
+            new_root = \
+            last_layer[<span class="hljs-string">"root"</span>] + [common_node]
+            pair_left = last_pairs[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>] 
+            <span class="hljs-comment"># the right element in the center pair will be</span>
+            <span class="hljs-comment"># the left element in pairs in this layer. </span>
+            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>, last_layer[<span class="hljs-string">"nodenum"</span>] + <span class="hljs-number">1</span>):
+                pairs.append(tuple((pair_left, last_pairs[i][<span class="hljs-number">1</span>])))
+                parentnodes[i<span class="hljs-number">-1</span>] = (<span class="hljs-number">0</span>, i)  
+                <span class="hljs-comment"># the i-1th node in this layer is from </span>
+                <span class="hljs-comment"># the pair (0, i) in last layer. ex.</span>
+                <span class="hljs-comment"># the first layer in the second layer is</span>
+                <span class="hljs-comment"># from the node pair (0, 1) in the first layer.   </span>
+        <span class="hljs-keyword">return</span> (pairs, 
+                nodes,
+                parentnodes, 
+                new_root)
+
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">fit</span><span class="hljs-params">(self)</span>:</span>
+        <span class="hljs-string">"""
+        fit the vine tree model by maximizing 
+        the likelihood of the whole tree.
+
+        """</span>
+        paramNum =\
+        sum([self.tree[<span class="hljs-string">"structure"</span>][layer][<span class="hljs-string">"edgenum"</span>] \
+             <span class="hljs-keyword">for</span> layer <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>, self.tree[<span class="hljs-string">"depth"</span>])])
+
+        thetaParams = np.ones(paramNum) * <span class="hljs-number">0.5</span>
+        bounds = [self.copula.bound] * paramNum
+        result = minimize(self.get_likelihood, \
+                          thetaParams, bounds=bounds)
+        thetaMatrix = np.zeros((self.tree[<span class="hljs-string">"depth"</span>], \
+                    self.tree[<span class="hljs-string">"structure"</span>][<span class="hljs-number">0</span>][<span class="hljs-string">"edgenum"</span>]))
+        n = <span class="hljs-number">0</span>
+        print(<span class="hljs-string">"result"</span>, result)
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>, self.tree[<span class="hljs-string">"depth"</span>]):
+            <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>, 
+                self.tree[<span class="hljs-string">"structure"</span>][i][<span class="hljs-string">"edgenum"</span>]):
+                thetaMatrix[i, j] = result.x[n]
+                n += <span class="hljs-number">1</span>
+
+        self.tree[<span class="hljs-string">"thetaMatrix"</span>] = thetaMatrix
+
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">fit2</span><span class="hljs-params">(self)</span>:</span>
+        
+        <span class="hljs-string">"""
+        fit the parameters through maximizing
+        the likelihood in each layer.
+        """</span>
+        self.tree[<span class="hljs-string">"thetaMatrix"</span>] =\
+                np.zeros((self.tree[<span class="hljs-string">"depth"</span>], 
+                self.tree[<span class="hljs-string">"structure"</span>][<span class="hljs-number">0</span>][<span class="hljs-string">"edgenum"</span>]))
+
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>, self.tree[<span class="hljs-string">"depth"</span>]+<span class="hljs-number">1</span>):
+            last_layer =\
+                    self.tree[<span class="hljs-string">"structure"</span>][i<span class="hljs-number">-1</span>]
+            layertheta = \
+                np.ones(last_layer[<span class="hljs-string">"edgenum"</span>]) * <span class="hljs-number">0.5</span>
+            bounds = \
+                [self.copula.bound] * \
+                last_layer[<span class="hljs-string">"edgenum"</span>]
+            result = \
+                minimize(self.get_layer_likelihood, 
+                         layertheta, args=(last_layer, ), 
+                         bounds=bounds)
+            self.tree[<span class="hljs-string">"thetaMatrix"</span>][i<span class="hljs-number">-1</span>, \
+                     :last_layer[<span class="hljs-string">"edgenum"</span>]] = result.x    
+
+            self.tree[<span class="hljs-string">"structure"</span>][i][<span class="hljs-string">"V"</span>] = \
+                    self.get_layer_h(result.x, last_layer)
+
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">simulate</span><span class="hljs-params">(self, n)</span>:</span>
+        <span class="hljs-string">"""
+        simulate the data from the vine tree model
+        param n: int, the number of the data 
+            to be simulated for each variable.
+
+        """</span>
+        <span class="hljs-keyword">if</span> self.tree[<span class="hljs-string">"thetaMatrix"</span>] <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+            print(<span class="hljs-string">"Please fit the model first."</span>)
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>
+        
+        <span class="hljs-keyword">else</span>:
+
+            W = np.random.uniform(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, \
+                    n * (self.variable_num + <span class="hljs-number">1</span>))
+            V = np.empty((n,
+                          self.variable_num+<span class="hljs-number">1</span>, 
+                          self.variable_num+<span class="hljs-number">1</span>))
+            W = W.reshape((n, 
+                           self.variable_num + <span class="hljs-number">1</span>))
+            U = np.empty((n, 
+                          self.variable_num + <span class="hljs-number">1</span>))
+            U[:, <span class="hljs-number">0</span>] = W[:, <span class="hljs-number">0</span>]
+            V[:, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>] = W[:, <span class="hljs-number">0</span>] 
+            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>, 
+                           self.tree[<span class="hljs-string">"depth"</span>] + <span class="hljs-number">1</span>):
+                V[:, <span class="hljs-number">0</span>, i] = W[:, i]
+                k = i - <span class="hljs-number">1</span>
+                <span class="hljs-keyword">while</span> k &gt;= <span class="hljs-number">0</span>:
+                    self.copula.theta = \
+                    self.tree[<span class="hljs-string">"thetaMatrix"</span>][k, i-k<span class="hljs-number">-1</span>]
+                    V[:, <span class="hljs-number">0</span>, i] = \
+                    self.copula.inverse_h(V[:, <span class="hljs-number">0</span>, i], 
+                                          V[:, k, k])
+                    k -= <span class="hljs-number">1</span>
+
+                U[:, i] = V[:, <span class="hljs-number">0</span>, i]
+
+                <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>, i): 
+                    self.copula.theta =\
+                    self.tree[<span class="hljs-string">"thetaMatrix"</span>][j, i-j<span class="hljs-number">-1</span>]
+                    V[:, j + <span class="hljs-number">1</span>, i] =\
+                    self.copula.h(V[:, j, i], V[:, j, j])
+            
+            <span class="hljs-keyword">return</span> U
+        
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_likelihood</span><span class="hljs-params">(self, thetaParams)</span>:</span>
+        <span class="hljs-string">"""get the likelihood of the vine tree model"""</span>
+        
+        total_likelihood = <span class="hljs-number">0</span>
+        left = <span class="hljs-number">0</span> 
+        right = <span class="hljs-number">0</span>
+        <span class="hljs-comment"># ignore the root layer</span>
+        <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>, 
+                self.tree[<span class="hljs-string">"depth"</span>] + <span class="hljs-number">1</span>):            
+            <span class="hljs-comment"># each layer' c function is determined</span>
+            <span class="hljs-comment"># by the last layer's and this layer's theta. </span>
+            <span class="hljs-comment">#number of theta in each layer is </span>
+            <span class="hljs-comment"># equal to the number of nodes in this layer.</span>
+            last_layer = self.tree[<span class="hljs-string">"structure"</span>][k<span class="hljs-number">-1</span>]
+
+            left = right
+            right = right + last_layer[<span class="hljs-string">"edgenum"</span>] 
+            layertheta = thetaParams[left:right]
+            total_likelihood += \
+                self.get_layer_likelihood(layertheta,
+                                        last_layer)
+            
+            self.tree[<span class="hljs-string">"structure"</span>][k][<span class="hljs-string">"V"</span>] = \
+                    self.get_layer_h(layertheta, 
+                                     last_layer)
+        
+        <span class="hljs-keyword">return</span> total_likelihood
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_layer_likelihood</span><span class="hljs-params">(self, 
+                             thetaParams,
+                             last_layer)</span>:</span>
+        <span class="hljs-string">"""get the likelihood of the layer"""</span>
+        likelihood = <span class="hljs-number">0</span>
+    
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>, 
+                       last_layer[<span class="hljs-string">"nodenum"</span>]+<span class="hljs-number">1</span>): 
+            <span class="hljs-comment"># totally l copula functions</span>
+            
+            self.copula.theta = thetaParams[i<span class="hljs-number">-1</span>]
+            c = self.copula.c(last_layer[<span class="hljs-string">"V"</span>][:, <span class="hljs-number">0</span>], 
+                              last_layer[<span class="hljs-string">"V"</span>][:, i])       
+            c = np.clip(c, <span class="hljs-number">1e-10</span>, np.inf) 
+            <span class="hljs-comment"># to avoid the log(0) problem</span>
+            likelihood += np.sum(np.log(c))
+        
+        <span class="hljs-keyword">return</span> -likelihood
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_layer_h</span><span class="hljs-params">(self, thetaParams, 
+                    last_layer)</span>:</span>
+        <span class="hljs-string">"""get the h function of the layer"""</span>
+        V = np.empty((self.T, last_layer[<span class="hljs-string">"nodenum"</span>])) 
+        <span class="hljs-comment"># the total nodes of this layer is </span>
+        <span class="hljs-comment"># the number of nodes in last layer minus 1, </span>
+        <span class="hljs-comment"># which is equal to the edges in last layer.</span>
+        
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>, 
+                       last_layer[<span class="hljs-string">"nodenum"</span>]+<span class="hljs-number">1</span>):
+            self.copula.theta = thetaParams[i<span class="hljs-number">-1</span>]
+            V[:, i<span class="hljs-number">-1</span>] = \
+                    self.copula.h(last_layer[<span class="hljs-string">"V"</span>][:, i],
+                                last_layer[<span class="hljs-string">"V"</span>][:, <span class="hljs-number">0</span>])
+        
+        <span class="hljs-keyword">return</span> V
+
+</div></code></pre>
+<p>\newpage</p>
+<h4 id="a2-copula">A.2 Copula</h4>
+<pre class="hljs"><code><div>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">mypower</span><span class="hljs-params">(x, y)</span>:</span>
+    <span class="hljs-string">"""
+    use different method to calculate
+    the power of x and y to avoid overflow.
+    return: np.array, the power of x and y.
+    """</span>
+    x = np.clip(x, <span class="hljs-number">1e-10</span>, <span class="hljs-number">1e10</span>)
+    log_x = np.log(x)
+    power = np.exp(y * log_x)
+
+    <span class="hljs-keyword">return</span> power
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Clayton</span>:</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self)</span>:</span>
+        self.theta = <span class="hljs-number">0</span>
+        self.bound = (<span class="hljs-number">-1</span>, np.inf)
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">c</span><span class="hljs-params">(self, u: np.ndarray, v: np.ndarray)</span>:</span>
+        <span class="hljs-string">"""
+        return: np.array, the density of Clayton copula
+        """</span>
+        <span class="hljs-keyword">return</span> (<span class="hljs-number">1</span> + self.theta) * \
+            mypower(u * v, <span class="hljs-number">-1</span> - self.theta) \
+            * mypower(mypower(u, -self.theta) + 
+                      mypower(v, -self.theta) - <span class="hljs-number">1</span>, 
+                      <span class="hljs-number">-2</span> - <span class="hljs-number">1</span> / self.theta)
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">h</span><span class="hljs-params">(self, u: np.ndarray, v: np.ndarray)</span>:</span>
+        <span class="hljs-string">"""
+
+        return: np.array, the h function or 
+        partial derivative F(u|v) of Clayton copula
+        since h function is basically a kind of conditional CDF,
+        it should be between 0 and 1.
+
+        """</span>
+        a = mypower(v, -self.theta - <span class="hljs-number">1</span>)
+        b = mypower(u, -self.theta) \
+                + mypower(v, -self.theta) - <span class="hljs-number">1</span>
+        c = mypower(b, <span class="hljs-number">-1</span> - <span class="hljs-number">1</span> / self.theta)
+        result = a * c
+
+        <span class="hljs-comment"># todo check which theta value</span>
+        <span class="hljs-comment"># will lead to nan value.</span>
+        <span class="hljs-keyword">if</span> self.theta &gt; <span class="hljs-number">1000</span>:
+            result[np.isnan(result)] = <span class="hljs-number">1</span>
+        <span class="hljs-keyword">else</span>:
+            result[np.isnan(result)] = <span class="hljs-number">0</span>
+        
+        result = np.clip(result, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>)
+
+        <span class="hljs-keyword">return</span> result
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">inverse_h</span><span class="hljs-params">(self, w: np.ndarray, v: np.ndarray)</span>:</span>
+
+        <span class="hljs-string">"""
+        return: np.array, the inverse of h function,
+        which is the conditional CDF of u given v.
+        since the inverse of h function will lead to the x,
+        which is uniform distributed, the value should be between 0 and 1.
+        """</span>
+
+        a = w * mypower(v, self.theta + <span class="hljs-number">1</span>)
+        b = mypower(a, -self.theta / (<span class="hljs-number">1</span> + self.theta))
+        c = mypower(v, -self.theta)
+
+        d = mypower(b + <span class="hljs-number">1</span> - c, <span class="hljs-number">-1</span> / self.theta)
+
+        <span class="hljs-comment"># todo: to avoid the nan value     </span>
+        <span class="hljs-keyword">if</span> self.theta &gt; <span class="hljs-number">1000</span>:
+            d[np.isnan(d)] = v[np.isnan(d)]
+        <span class="hljs-keyword">else</span>:
+            d[np.isnan(d)] = w[np.isnan(d)]
+        
+        d = np.clip(d, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>)
+        <span class="hljs-keyword">return</span> d
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Gaussian</span>:</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self)</span>:</span>
+        self.theta = <span class="hljs-number">0.5</span>
+        self.bound = (<span class="hljs-number">-1</span>+<span class="hljs-number">1e-6</span>, <span class="hljs-number">1</span><span class="hljs-number">-1e-6</span>)
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">c</span><span class="hljs-params">(self, u, v)</span>:</span>
+        <span class="hljs-string">"""
+        return the density of Clayton copula
+        """</span>
+        x1 = norm.ppf(u)
+        x2 = norm.ppf(v)
+        x1 = np.clip(x1, <span class="hljs-number">-1e10</span>, <span class="hljs-number">1e10</span>)
+        x2 = np.clip(x2, <span class="hljs-number">-1e10</span>, <span class="hljs-number">1e10</span>)
+        a = (self.theta ** <span class="hljs-number">2</span>) * (x1 ** <span class="hljs-number">2</span> + x2 ** <span class="hljs-number">2</span>)\
+        - <span class="hljs-number">2</span> * self.theta * x1 * x2
+        
+        b = a / (<span class="hljs-number">2</span> * (<span class="hljs-number">1</span> - self.theta ** <span class="hljs-number">2</span>))
+        <span class="hljs-keyword">return</span> (<span class="hljs-number">1</span> / np.sqrt(<span class="hljs-number">1</span> - \
+                            self.theta ** <span class="hljs-number">2</span>)) \
+                            * np.exp(-b)
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">h</span><span class="hljs-params">(self, u, v)</span>:</span>
+        <span class="hljs-string">"""
+        return the h function
+        """</span>
+
+        a = (norm.ppf(u) - self.theta * norm.ppf(v)) \
+                / np.sqrt(<span class="hljs-number">1</span> - self.theta ** <span class="hljs-number">2</span>)
+        
+
+        <span class="hljs-keyword">return</span> norm.cdf(a)
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">inverse_h</span><span class="hljs-params">(self, w, v)</span>:</span>
+        <span class="hljs-string">"""
+        return the inverse of h function,
+        which is the conditional CDF of u given v.
+        """</span>
+
+        a = norm.ppf(w) * np.sqrt(<span class="hljs-number">1</span> - self.theta ** <span class="hljs-number">2</span>)\
+                + self.theta * norm.ppf(v)
+
+        <span class="hljs-keyword">return</span> norm.cdf(a)
+
+</div></code></pre>
+<h4 id="a3-gaussian-copula">A.3 Gaussian Copula</h4>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> math
+<span class="hljs-keyword">from</span> scipy.stats <span class="hljs-keyword">import</span> norm
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">cal_determinant</span><span class="hljs-params">(matrix)</span>:</span>
+    <span class="hljs-keyword">if</span> matrix.shape[<span class="hljs-number">0</span>] == <span class="hljs-number">1</span>:
+
+        <span class="hljs-keyword">return</span> matrix[<span class="hljs-number">0</span>, <span class="hljs-number">0</span>]
+
+    <span class="hljs-keyword">elif</span> matrix.shape[<span class="hljs-number">0</span>] == <span class="hljs-number">2</span>:
+
+        <span class="hljs-keyword">return</span> matrix[<span class="hljs-number">0</span>, <span class="hljs-number">0</span>] * matrix[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>] - matrix[<span class="hljs-number">0</span>, <span class="hljs-number">1</span>] * matrix[<span class="hljs-number">1</span>, <span class="hljs-number">0</span>]
+
+    <span class="hljs-keyword">else</span>:
+
+        determinant = <span class="hljs-number">0</span>
+
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(matrix.shape[<span class="hljs-number">0</span>]):
+            sub_matrix = np.hstack((matrix[<span class="hljs-number">1</span>:, :i], matrix[<span class="hljs-number">1</span>:, i + <span class="hljs-number">1</span>:]))
+            determinant_sub = cal_determinant(sub_matrix)
+            determinant += (<span class="hljs-number">-1</span>) ** i * matrix[<span class="hljs-number">0</span>, i] * determinant_sub
+
+        <span class="hljs-keyword">return</span> determinant
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">symmetric_matrix</span><span class="hljs-params">(matrix, if_print=True)</span>:</span>
+    is_symmetric = <span class="hljs-literal">True</span>
+
+    <span class="hljs-keyword">if</span> matrix.shape[<span class="hljs-number">0</span>] != matrix.shape[<span class="hljs-number">1</span>]:
+        print(<span class="hljs-string">"This is not a matrix."</span>)
+        is_symmetric = <span class="hljs-literal">False</span>
+
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(matrix.shape[<span class="hljs-number">0</span>]):
+        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> range(i):
+            <span class="hljs-keyword">if</span> matrix[i, j] != matrix[j, i]:
+                is_symmetric = <span class="hljs-literal">False</span>
+    <span class="hljs-keyword">if</span> if_print:
+        <span class="hljs-keyword">if</span> is_symmetric:
+            print(<span class="hljs-string">"The matrix is a symmetric matrix."</span>)
+
+        <span class="hljs-keyword">else</span>:
+            print(<span class="hljs-string">"The matrix is not symmetric matrix."</span>)
+
+    <span class="hljs-keyword">return</span> is_symmetric
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">positive_definite_matrix</span><span class="hljs-params">(matrix)</span>:</span>
+    is_pd = <span class="hljs-literal">True</span>
+
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> symmetric_matrix(matrix):
+        print(<span class="hljs-string">"The matrix is not positive definite matrix."</span>)
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(matrix.shape[<span class="hljs-number">0</span>]):
+        <span class="hljs-keyword">if</span> cal_determinant(matrix[:i, :i]) &lt;= <span class="hljs-number">0</span>:
+            is_pd = <span class="hljs-literal">False</span>
+
+
+    <span class="hljs-keyword">return</span> is_pd
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">cholesky_decomposition</span><span class="hljs-params">(matrix)</span>:</span>
+    n = matrix.shape[<span class="hljs-number">0</span>]
+    U = np.zeros((n, n))
+
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(n):
+        <span class="hljs-comment"># sum_square = sum(D[k, i] ** 2 for k in range(i))</span>
+        sum_square = np.dot(U[:i, i], U[:i, i])
+        U[i, i] = np.sqrt(matrix[i, i] - sum_square)
+
+        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> range(i + <span class="hljs-number">1</span>, n):
+            <span class="hljs-comment"># sum_ = sum(D[k, i] * D[k, j] for k in range(j))</span>
+            sum_ = np.dot(U[:j, i], U[:j, j])
+            U[i, j] = (matrix[i, j] - sum_) / U[i, i]
+
+    <span class="hljs-keyword">return</span> U
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">generate_normal_bm</span><span class="hljs-params">(miu, sigma, n)</span>:</span>
+    <span class="hljs-comment"># generate D ~ Exp(1 / 2)</span>
+    d = - <span class="hljs-number">2</span> * np.log(np.random.uniform(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, int(n / <span class="hljs-number">2</span>)))
+
+    <span class="hljs-comment"># generate Θ ~ Unif(0, 2Π)</span>
+    theta = <span class="hljs-number">2</span> * math.pi * np.random.uniform(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, int(n / <span class="hljs-number">2</span>))
+
+    <span class="hljs-comment"># generate X, Y ~ Normal(miu, sigma)</span>
+    X = np.sqrt(d) * np.cos(theta) * sigma + miu
+    Y = np.sqrt(d) * np.sin(theta) * sigma + miu
+    normal_random_variables = np.hstack((X, Y))
+
+    <span class="hljs-keyword">return</span> normal_random_variables
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GaussianCopula</span><span class="hljs-params">(object)</span>:</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, data, tickers)</span>:</span>
+        self.data = np.array(data)
+        self.tickers = tickers
+        self.n_index = self.data.shape[<span class="hljs-number">1</span>]
+        self.parameter_dict = {}
+        self.corr = np.array([])
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">estimate_paras</span><span class="hljs-params">(self)</span>:</span>
+        return_data = self.data
+        self.parameter_dict = {}
+        <span class="hljs-keyword">for</span> ticker <span class="hljs-keyword">in</span> self.tickers:
+            miu = np.mean(return_data)
+            sigma = np.std(return_data, ddof=<span class="hljs-number">0</span>)
+            self.parameter_dict[ticker] = [miu, sigma]
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">estimate_corr</span><span class="hljs-params">(self)</span>:</span>
+        <span class="hljs-comment"># estimate the covariance matrix</span>
+        mean = np.mean(self.data, axis=<span class="hljs-number">0</span>)
+        demeaned_data = self.data - mean
+        covariance = (demeaned_data.T @ demeaned_data) / (self.n_index - <span class="hljs-number">1</span>)
+        std = np.sqrt(np.diag(covariance))
+        self.corr = covariance / np.outer(std, std)
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">generate_samples</span><span class="hljs-params">(self, n_samples)</span>:</span>
+        <span class="hljs-comment"># generate random variables</span>
+        random_normal = generate_normal_bm(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, n_samples * self.n_index).reshape(n_samples, self.n_index)
+        U_matrix = cholesky_decomposition(self.corr)
+        correlated_normal = random_normal @ U_matrix
+        <span class="hljs-comment"># convert it into U[0, 1]</span>
+        U = norm.cdf(correlated_normal)
+        <span class="hljs-comment"># map to marginal distributions</span>
+        sample_returns = []
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(self.data.shape[<span class="hljs-number">1</span>]):
+            ppf_value = np.quantile(self.data[:, i], U[:, i])
+            sample_returns.append(ppf_value)
+
+        sample_returns = np.array(sample_returns).T
+
+        <span class="hljs-keyword">return</span> U, sample_returns
+
+
+
+</div></code></pre>
+
+</body>
+</html>

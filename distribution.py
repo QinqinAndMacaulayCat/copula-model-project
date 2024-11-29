@@ -22,12 +22,6 @@ class Multivariate:
         print("rank", self.data.rank(), "len", len(self.data))
         return self.ecdf
 
-    def ppf(self, u):
-        """
-        u: np.array, the quantile
-        """
-        pass
-    
     def empircal_ppf(self, u):
         """
         u: np.array, the quantile

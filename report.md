@@ -10,8 +10,7 @@ to estimate the risk sensitivity of financial assets through multivariate copula
 
 
 ## 2 Modeling
-
-### 2.1 Copula
+### 2.1 Pair Copula
 
 In this section, we basically refer to the models of the paper by Aas et al. <sup>[1](#Aas2009)</sup>.
 
@@ -122,7 +121,7 @@ $$
 
 Fitting a canonical vine might be advantageous when a particular variable is known to be a key variable that governs interaction in the data set. In such a situation one may decide to locate this variable at the root of the canonical vine, as we have done with variable in the figure. 
 
-#### 2.1.3 Simulation from a pair-copula decomposed model
+#### 2.1.2 Simulation from a pair-copula decomposed model
 
 In this section we show the simulation algorithm for canonical vines which follows the method discussed in Aas <sup>[1](#Aas2019)</sup>.
 We assume for simplicity that all the margins of the distribution are uniform. [^2]
@@ -195,7 +194,7 @@ $$
 \newpage
 
 
-#### 2.1.4 Estimation of the parameters
+#### 2.1.3 Estimation of the parameters
 
 In this section we describe how the parameters of the canonical vine density are estimated. To simplify the process as mentioned before, we assumme that the marginals are uniform and the the time series is stationary and independent over time. This assumption is not limiting, as we can always preprocess the data through models such as ARIMA and GARCH to make the input of the canonical vine model stationary. 
 
@@ -207,8 +206,6 @@ The log-likelihood is given by:
 $$
 \sum_{j=1}^{n-1} \sum_{i=1}^{n-j} \sum_{t=1}^{T} \log c_{j, j+i|1, ..., j-1}\{F(x_{j,t}|x_{1,t}, ..., x_{j-1,t}), F(x_{i+j,t}|x_{1,t}, ..., x_{j-1,t})\}.
 $$
-
-
 
 For each copula in the above formula, there is at least one parameter to be determined. The algorithm for estimating the parameters is listed below in the figure. The ourter for-loop corresponds to the outer sum in the pseudo-likelihood. The inner for-loop corresponds to the sum over i. The innermost for-loop corresponds to the sum over the time series. Here, the element t of $textbf{v}_{j,i}$ is $v_{j, i, t} = F(x_{i, t}|x_{1,t},...,x_{j,t})$. $L(\textbf{x}, \textbf{v}, \Theta)$ is the log-likelihood of the chosen bivariate copula with parameters $\Theta$ and the data $\textbf{x}$ and $\textbf{v}$. That is,
 
@@ -231,12 +228,12 @@ Starting values of the parameters needed in the numerical maximization of the lo
 
 4. Repeat steps 2 and 3 until the parameters of all copulae in the vine tree have been estimated.
 
-#### 2.1.5 Copula selection
+#### 2.1.4 Copula selection
 
 In the above content, we introduce the canonical vine copula, the calibration of the parameters, and the simulation of the data. However, we didn't specify which copula to use in the pair-copula decomposition. The choice of copula is crucial for the performance of the model. We only show the Gaussian copula and Clayton copula in the following content. However, the C-Vine structure can be easily extended to other copulae through getting copula functions and h-functions.
 
 
-#### 2.1.5.1 Gaussian copula
+#### 2.1.4.1 Gaussian copula
 
 The density of the bivariate Gaussian copula is given by:
 
@@ -259,7 +256,7 @@ h^{-1}(w, v, \theta) = \Phi\{ \Phi^{-1}(w) \sqrt{1-\theta^2} + \theta \Phi^{-1}(
 $$
 
 
-#### 2.1.5.2 Clayton copula
+#### 2.1.4.2 Clayton copula
 
 The density of Clayton copula is given by:
 
@@ -281,8 +278,60 @@ $$
 h^{-1}(w, v, \theta) = \{(w \cdot v^{\theta+1})^{\frac{\theta}{\theta+1}} + 1-v^{-\theta}\}^{-1/\theta}.
 $$
 
+### 2.2 Gaussian Copula
+A Gaussian Copula that the dependency structure between the multiple random variavles is Gaussian dependency. We introduce Gaussian Copula here to compare it with CVine.
 
-### 2.2 Distribution of the data
+#### 2.2.1 Mathematical Representation
+Let $\Phi$ be the standard normal CDF and $\Phi_{\Sigma}$ is the CDF of a multivariate normal distribution with correlation matrix $\Sigma$. For random variables $(U_1, U_2, \ldots, U_d)$ with uniform marginals, the Gaussian Copula $(C)$ is defined as:
+
+$$
+C(u) = \Phi_{\Sigma}(\Phi^{-1}(u_1), \Phi^{-1}(u_2), \ldots, \Phi^{-1}(u_d))
+$$
+
+#### 2.2.2 Cholesky Decomposition
+Cholesky decomposition is a matrix factorization technique used for symmetric, positive-definite matrix. It expresses a matrix as the product of a lower triangular matrix and its transpose.
+
+Given a symmetric, positive-definite matrix $A$, the Cholesky decomposition finds a upper triangular matrix $U$ such that:
+
+$$
+A = LL^\top
+$$
+
+where:
+- $L$ is a lower triangular matrix with real, positive diagonal entries.
+- $L^\top$ is the transpose of $L$.
+
+The algorithm is as follows:
+1. For a given matrix $A$, calculate each element of $L$ using:
+   $$
+   L_{i,i} = \sqrt{A_{i,i} - \sum_{k=1}^{i-1} L_{i,k}^2}
+   $$
+   $$
+   L_{i,j} = \frac{1}{L_{j,j}} \left( A_{i,j} - \sum_{k=1}^{j-1} L_{i,k} L_{j,k} \right), \quad \text{for } i > j
+   $$
+2. Fill the matrix $L$ row by row.
+
+#### 2.2.3 Steps to Build a Gaussian Copula
+
+1. Define the correlation matrix.
+
+2. Use Cholesky decomposition to decompose the correlation matrix.
+
+3. Generate independent standard normal random variables.
+
+4. Apply the decomposed matrix on these random variables to get correlated random variables.
+
+5. Map the random variables to uniform distributions by calculating their cumulative distribution function.
+
+
+#### 2.2.4 Comparison between Gaussian Copula and CVine
+In Gaussian Copula, the dependency is captured by a correlation matrix, while in CVne we models dependencies pairwisely. Here are some main difference between these two methods.
+
+1. Gaussian Copula qssumes symmetric Gaussian dependency, which may not adequately represent tail dependencies. It underestimates the probability of extreme co-movements.
+
+2. In CVine, dependency is modeled with separate copulas, allowing for different types of relationships between variables. CVine can capture asymmetric dependencies and tail dependencies more effectively.
+
+3. Gaussian Copula only requires the Cholesky decomposition of the correlation matrix. So, the computation is flexible. However, CVine Copula More computationally intensive. It requires constructing and evaluating multiple pair-copulas and dependency trees.
 
 
 ### 2.3 CCVaR
@@ -310,21 +359,54 @@ $$
 ### 3.1 Data
 
 ### 3.2 Code
+#### 3.2.1 Data Fetcher
+1. **`__init__(self, tickers: list, start_date: datetime, end_date: datetime)`** - This method initializes the `DataFetcher` object. It takes in three arguments: 
+   - `tickers`: a list of stock or index tickers,
+   - `start_date`: the start date for fetching historical data,
+   - `end_date`: the end date for the data fetching period. 
 
-#### 3.2.1 Distribution
+2. **`fetch_and_save_data(self)`** - It uses `yfinance` to download the adjusted closing prices for each ticker between the specified `start_date` and `end_date`. The downloaded data is then forward-filled for any missing values and saved to the CSV file. Finally, it computes the percentage change of the adjusted closing prices, dropping any rows with missing values.
 
+3. **`plot_distribuion(self)`** - This method generates and displays histograms of the return distributions for each ticker in the `tickers` list.
 
-#### 3.2.2 CVine
+Here， we choosed a list of tickers (tickers = ['^GSPC', '^DJI', '^TNX', '^IXIC', '^RUT']), representing the five financial instruments of S&P 500 Index, Dow Jones Industrial Average, CBOE 10-Year Treasury Note Yield, NASDAQ Composite Index and Russell 2000 Index. The start date of our data is set to January 1st, 2023, and the end date is set to November 1st, 2024. Using these parameters, we fetched historical market data of indices from Yahoo Finance. Then, we calculated the return of these indices and dropped invalid data as the input of our model.
+
+#### 3.2.2 Distribution
+In this code, the `Multivariate` class is designed to perform various multivariate statistical operations on a given dataset. The class includes methods for calculating empirical cumulative distribution functions (ECDF), empirical percent-point functions (PPF), extreme value correlation, and visualization of data through heatmaps and kernel density estimation (KDE) plots. The main methods in the class are:
+
+1. **`__init__(self, data)`** - This is the initialization method of the `Multivariate` class. It takes a `data` argument. The method calculates and stores the covariance and correlation matrices of the data.
+
+2. **`empircal_cdf(self)`** - This method computes the empirical cumulative distribution function (ECDF) for each column of the dataset. The ECDF is calculated by ranking the values in each column and dividing by the total number of data points. The result is stored in the `self.ecdf` attribute, and the method prints the rank of the data along with its length for verification. It returns the calculated ECDF values.
+
+3. **`empircal_ppf(self, u)`** - This method calculates the empirical percent-point function (PPF) for a given set of quantiles (`u`). It iterates through each column in the data and computes the quantile value at the corresponding position in `u` for each column. The method returns an array of PPF values, which are the inverse of the ECDF.
+
+4. **`extreme_value_correlation(df, percentile=95, direction="upper")`** - This static method computes the extreme value correlation for a dataset by analyzing the tail behavior of the data. It first calculates the threshold for each column at a given percentile. It then calculates the correlation of extreme values by checking how often two columns both exceed their respective thresholds (upper or lower). The result is returned as a correlation matrix showing the conditional probability of extreme values occurring together for each pair of columns.
+
+5. **`heatmap(data, title)`** - This static method generates a heatmap visualization for the given data. It creates a heatmap from the data which can be used to visualize the relationships or correlations between different variables in the dataset.
+
+6. **`plot_kde_comparison(df, title)`** - This method creates a pairplot to compare the kernel density estimates (KDE) of the variables. The pairplot visualizes both scatter plots and KDEs on the diagonal. This method is useful for understanding the pairwise relationships and distributions of variables in the dataset.
+
+#### 3.2.3 CVine
 
 In this code, we use the class `CVine` to realize the canonical vine copula. Basically, the class involves the following methods:
 
-1. `build_tree()` - to build the tree structure of the canonical vine copula. This method will fill the class attribute `tree` with the tree structure. 
+1. **build_tree()** - to build the tree structure of the canonical vine copula. This method will fill the class attribute `tree` with the tree structure. 
 
-2. `fit()` - to fit the canonical vine copula to the data. This method will estimate the parameters of the copulae in the vine tree, which will call the method `get_likelihood()` to calculate the log-likelihood of the tree. Here, we use `scipy.optimize.minimize` to maximize the log-likelihood.
+2. **fit()** - to fit the canonical vine copula to the data. This method will estimate the parameters of the copulae in the vine tree, which will call the method `get_likelihood()` to calculate the log-likelihood of the tree. Here, we use `scipy.optimize.minimize` to maximize the log-likelihood.
 
-3. `simulate()` - to simulate data from the canonical vine copula. This method will simulate data from the fitted vine copula. In this algorithm, we generate independent uniform random variables and then use the algorithm mentioned in Section 2 to generate dependent uniform random variables.
+3. **simulate()** - to simulate data from the canonical vine copula. This method will simulate data from the fitted vine copula. In this algorithm, we generate independent uniform random variables and then use the algorithm mentioned in Section 2 to generate dependent uniform random variables.
 
-#### 3.2.3 CCVar
+### 3.2.3 Gaussian Copula
+In this code, we use the class `GaussianCopula` to implement a Gaussian copula for modeling dependencies between multiple variables. The class involves several key methods, each performing distinct tasks in the copula modeling process:
+
+1. **estimate_paras()** - This method estimates the parameters (mean and standard deviation) for each variable in the dataset. It calculates the mean (`miu`) and standard deviation (`sigma`) for each variable in the dataset and stores these parameters in the `parameter_dict` attribute. These parameters are essential for understanding the marginal distributions of the individual variables before applying the copula.
+
+2. **estimate_corr()** - This method estimates the correlation matrix from the dataset. It first centers the data by subtracting the mean of each variable and then computes the covariance matrix. The covariance matrix is normalized by dividing by the product of the standard deviations of the variables to obtain the correlation matrix. This matrix captures the dependencies between the variables, which will later be used to introduce correlation in the simulated data.
+
+3. **generate_samples(n_samples)** - This method generates samples from the fitted Gaussian copula. It first creates independent random variables using the `generate_normal_bm` function, which generates standard normal random variables using the Box-Muller method. Then, it applies the Cholesky decomposition to the correlation matrix to introduce the dependency structure between the variables. The uncorrelated normal variables are multiplied by the Cholesky factor, resulting in correlated normal variables. These are then transformed into uniform random variables using the cumulative distribution function (CDF) of the normal distribution. Finally, the uniform random variables are mapped back to the marginal distributions using the inverse cumulative distribution (quantile function), generating correlated sample returns from the copula.
+
+
+#### 3.2.4 CCVar
 
 In this section, we describe the code implementation of CCVaR using Python. The implementation is encapsulated in the `CCVaR` class, which contains methods to calculate CCVaR for single asset-factor pairs and generate a CCVaR matrix for all assets and factors.
 
@@ -352,10 +434,10 @@ In this section, we describe the code implementation of CCVaR using Python. The 
 #### 3.3.1 Distribution
 
 
-#### 3.3.2 CVine
-We test the `CVine` based on the return data of the assets. 
+#### 3.3.2 CVine and Multivariate Gaussian Copula
+We test the `CVine` and `GaussianCopula`based on the return data of the assets. 
 
-We first show the correlation matrix of the returns of our initial data and the correlation of the returns of the simulated data from Gaussian copula and Clayton copula. The results are shown below:
+We first show the correlation matrix of the returns of our initial data and the correlation of the returns of the simulated data from CVine (Gaussian copula and Clayton copula) and Multivariate Gaussian Copula. The results are shown below:
 
 ![Correlation matrix of the returns of the initial data](result/Correlation_Matrix_of_Initial_Data.png)
 
@@ -369,10 +451,14 @@ We first show the correlation matrix of the returns of our initial data and the 
 
 
 \newpage
+![Correlation matrix of the returns of the simulated data from Clayton copula](result/Correlation_Matrix_of_GaussianM.png)
+
+
+\newpage
 
 Basically, the correlation matrix of the returns of the simulated data from the copulae is similar to the correlation matrix of the returns of the initial data. However, we can see that the level of Pearson correlation is different. 
 
-Then we show the scatter plot of the returns of the initial data and the scatter plot of the returns of the simulated data from Gaussian copula and Clayton copula. The results are shown below: 
+Then we show the scatter plot of the returns of the initial data and the scatter plot of the returns of the simulated data from CVine and Gaussian Copula. The results are shown below: 
 
 ![Scatter plot of the returns of the initial data](result/Compare_CDFs_of_Initial_Data.png)
 
@@ -386,6 +472,10 @@ Then we show the scatter plot of the returns of the initial data and the scatter
 
 \newpage
 
+![Scatter plot of the returns of the simulated data from Clayton copula](result/Compare_CDFs_of_Gaussian_Copula.png)
+
+\newpage
+
 We can see that the scatter plot of the returns of the simulated data from the copulae is basically similar to the scatter plot of the returns of the initial data, which means the copulae can capture the dependence structure of the data. However, the correlation of the simulated results may perform differently from the initial data when the assets don't have clear correlation structure.
 
 
@@ -395,7 +485,11 @@ Finally, we test the extreme dependence between the returns of the assets as the
 
 \newpage
 
-The average value of the Clayton copula is higher than the Gaussian copula, which means the Clayton copula has a higher level of extreme dependence between the returns of the assets.
+In CVine, the average value of the Clayton copula is higher than the Gaussian copula, which means the Clayton copula has a higher level of extreme dependence between the returns of the assets.
+
+In Multivariate Gaussian Copula, we get a even higher correlation. It may mean that the Multivariate Gaussian Copula overestimates linear dependency between variables.
+
+Our results shows that CVine are more applicable in more complex dependent relationships.
 
 
 #### 3.3.3 CCVaR
@@ -404,7 +498,7 @@ The average value of the Clayton copula is higher than the Gaussian copula, whic
 
 ## 4 Conclusion
 
-The canonical vine copula is a powerful tool for modeling the dependence structure of multivariate data. In this report, we have introduced the canonical vine copula and its application in estimating the risk sensitivity of asset portfolios. We have implemented the canonical vine copula in Python and demonstrated its use in simulating data and estimating the parameters of the copulae. We have also implemented the Cross Conditional Value at Risk (CCVaR) to quantify the expected return of an asset under extreme conditions of a given risk factor. The CCVaR provides a useful measure of the risk sensitivity of asset portfolios to different risk factors. Further research can explore the application of the canonical vine copula in asset portfolio optimization and risk management. The drawbacks of our implementation include that we have not compare the results of different copulae and simply assume returns follow Gaussian Copula. 
+The canonical vine copula is a powerful tool for modeling the dependence structure of multivariate data. In this report, we have introduced the canonical vine copula and its application in estimating the risk sensitivity of asset portfolios. We have implemented the canonical vine copula in Python and demonstrated its use in simulating data and estimating the parameters of the copulae. Besides, we compared our results of CVine and Multivariate Gaussian Copula and find that CVine is more useful in depicting non-linear relationships. We have also implemented the Cross Conditional Value at Risk (CCVaR) to quantify the expected return of an asset under extreme conditions of a given risk factor. The CCVaR provides a useful measure of the risk sensitivity of asset portfolios to different risk factors. Further research can explore the application of the canonical vine copula in asset portfolio optimization and risk management. The drawbacks of our implementation include that we have not compare the results of different copulae and simply assume returns follow Gaussian Copula. 
 
 \newpage
 
@@ -901,6 +995,147 @@ class Gaussian:
                 + self.theta * norm.ppf(v)
 
         return norm.cdf(a)
+
+```
+
+#### A.3 Gaussian Copula
+```python
+import numpy as np
+import math
+from scipy.stats import norm
+
+
+def cal_determinant(matrix):
+    if matrix.shape[0] == 1:
+
+        return matrix[0, 0]
+
+    elif matrix.shape[0] == 2:
+
+        return matrix[0, 0] * matrix[1, 1] - matrix[0, 1] * matrix[1, 0]
+
+    else:
+
+        determinant = 0
+
+        for i in range(matrix.shape[0]):
+            sub_matrix = np.hstack((matrix[1:, :i], matrix[1:, i + 1:]))
+            determinant_sub = cal_determinant(sub_matrix)
+            determinant += (-1) ** i * matrix[0, i] * determinant_sub
+
+        return determinant
+
+
+def symmetric_matrix(matrix, if_print=True):
+    is_symmetric = True
+
+    if matrix.shape[0] != matrix.shape[1]:
+        print("This is not a matrix.")
+        is_symmetric = False
+
+    for i in range(matrix.shape[0]):
+        for j in range(i):
+            if matrix[i, j] != matrix[j, i]:
+                is_symmetric = False
+    if if_print:
+        if is_symmetric:
+            print("The matrix is a symmetric matrix.")
+
+        else:
+            print("The matrix is not symmetric matrix.")
+
+    return is_symmetric
+
+
+def positive_definite_matrix(matrix):
+    is_pd = True
+
+    if not symmetric_matrix(matrix):
+        print("The matrix is not positive definite matrix.")
+        return False
+
+    for i in range(matrix.shape[0]):
+        if cal_determinant(matrix[:i, :i]) <= 0:
+            is_pd = False
+
+
+    return is_pd
+
+
+def cholesky_decomposition(matrix):
+    n = matrix.shape[0]
+    U = np.zeros((n, n))
+
+    for i in range(n):
+        # sum_square = sum(D[k, i] ** 2 for k in range(i))
+        sum_square = np.dot(U[:i, i], U[:i, i])
+        U[i, i] = np.sqrt(matrix[i, i] - sum_square)
+
+        for j in range(i + 1, n):
+            # sum_ = sum(D[k, i] * D[k, j] for k in range(j))
+            sum_ = np.dot(U[:j, i], U[:j, j])
+            U[i, j] = (matrix[i, j] - sum_) / U[i, i]
+
+    return U
+
+
+def generate_normal_bm(miu, sigma, n):
+    # generate D ~ Exp(1 / 2)
+    d = - 2 * np.log(np.random.uniform(0, 1, int(n / 2)))
+
+    # generate Θ ~ Unif(0, 2Π)
+    theta = 2 * math.pi * np.random.uniform(0, 1, int(n / 2))
+
+    # generate X, Y ~ Normal(miu, sigma)
+    X = np.sqrt(d) * np.cos(theta) * sigma + miu
+    Y = np.sqrt(d) * np.sin(theta) * sigma + miu
+    normal_random_variables = np.hstack((X, Y))
+
+    return normal_random_variables
+
+
+class GaussianCopula(object):
+    def __init__(self, data, tickers):
+        self.data = np.array(data)
+        self.tickers = tickers
+        self.n_index = self.data.shape[1]
+        self.parameter_dict = {}
+        self.corr = np.array([])
+
+    def estimate_paras(self):
+        return_data = self.data
+        self.parameter_dict = {}
+        for ticker in self.tickers:
+            miu = np.mean(return_data)
+            sigma = np.std(return_data, ddof=0)
+            self.parameter_dict[ticker] = [miu, sigma]
+
+    def estimate_corr(self):
+        # estimate the covariance matrix
+        mean = np.mean(self.data, axis=0)
+        demeaned_data = self.data - mean
+        covariance = (demeaned_data.T @ demeaned_data) / (self.n_index - 1)
+        std = np.sqrt(np.diag(covariance))
+        self.corr = covariance / np.outer(std, std)
+
+    def generate_samples(self, n_samples):
+        # generate random variables
+        random_normal = generate_normal_bm(0, 1, n_samples * self.n_index).reshape(n_samples, self.n_index)
+        U_matrix = cholesky_decomposition(self.corr)
+        correlated_normal = random_normal @ U_matrix
+        # convert it into U[0, 1]
+        U = norm.cdf(correlated_normal)
+        # map to marginal distributions
+        sample_returns = []
+        for i in range(self.data.shape[1]):
+            ppf_value = np.quantile(self.data[:, i], U[:, i])
+            sample_returns.append(ppf_value)
+
+        sample_returns = np.array(sample_returns).T
+
+        return U, sample_returns
+
+
 
 ```
 

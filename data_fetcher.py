@@ -58,33 +58,20 @@ class DataFetcher:
 
 
 
-def generate_normal_bm(miu, sigma, n):
-    # generate D ~ Exp(1 / 2)
-    d = - 2 * np.log(np.random.uniform(0, 1, int(n / 2)))
 
-    # generate Θ ~ Unif(0, 2Π)
-    theta = 2 * math.pi * np.random.uniform(0, 1, int(n / 2))
-
-    # generate X, Y ~ Normal(miu, sigma)
-    X = np.sqrt(d) * np.cos(theta) * sigma + miu
-    Y = np.sqrt(d) * np.sin(theta) * sigma + miu
-    normal_random_variables = np.hstack((X, Y))
-    return normal_random_variables
 
 
 # parameter_dict = {}
 # distribution_dict = {}
 # n = 100
 
-
-
-    # assume all the returns satisfies gaussian distribution, estimate the parameters
-    # miu = np.mean(return_data)
-    # sigma = np.std(return_data, ddof=0)
-    # parameter_dict[ticker] = [miu, sigma]
-    # # generate random variables from the estimated distribution
-    # random_number = generate_normal_bm(miu, sigma, n)
-    # distribution_dict[ticker] = random_number.copy()
+# assume all the returns satisfies gaussian distribution, estimate the parameters
+# miu = np.mean(return_data)
+# sigma = np.std(return_data, ddof=0)
+# parameter_dict[ticker] = [miu, sigma]
+# # generate random variables from the estimated distribution
+# random_number = generate_normal_bm(miu, sigma, n)
+# distribution_dict[ticker] = random_number.copy()
 
 
 
